@@ -1,6 +1,7 @@
 package io.github.pedropizzutti.acervo_referencias.rest.controller;
 
 import io.github.pedropizzutti.acervo_referencias.domain.entity.Usuario;
+import io.github.pedropizzutti.acervo_referencias.exception.RegraNegocioException;
 import io.github.pedropizzutti.acervo_referencias.rest.dto.UsuarioDTO;
 import io.github.pedropizzutti.acervo_referencias.service.UsuarioService;
 import org.springframework.http.HttpStatus;
@@ -18,12 +19,12 @@ public class UsuarioController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public String save(@RequestBody UsuarioDTO usuarioDTO){
+    public String salvarNovoUsuario(@RequestBody UsuarioDTO usuarioDTO) throws RegraNegocioException {
 
-        Usuario usuarioSalvo = usuarioService.salvar(usuarioDTO);
+            Usuario usuarioSalvo = usuarioService.salvar(usuarioDTO);
 
-        String loginUsuario = usuarioSalvo.getLogin();
+            String loginUsuario = usuarioSalvo.getLogin();
 
-        return loginUsuario;
+            return loginUsuario;
+        }
     }
-}
