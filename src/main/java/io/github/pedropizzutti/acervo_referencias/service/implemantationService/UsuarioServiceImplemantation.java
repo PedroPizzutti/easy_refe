@@ -59,7 +59,7 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
     public boolean verificarDisponibilidadeDoEmail(String email){
 
-        boolean emailDisponivel = usuarioRepository.existsByLogin(email);
+        boolean emailDisponivel = usuarioRepository.existsByEmail(email);
 
         return emailDisponivel;
 

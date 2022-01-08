@@ -7,6 +7,8 @@ import io.github.pedropizzutti.acervo_referencias.service.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/usuario")
 public class UsuarioController {
@@ -19,7 +21,7 @@ public class UsuarioController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public String salvarNovoUsuario(@RequestBody UsuarioDTO usuarioDTO) throws RegraNegocioException {
+    public String salvarNovoUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO) throws RegraNegocioException {
 
             Usuario usuarioSalvo = usuarioService.salvar(usuarioDTO);
 
