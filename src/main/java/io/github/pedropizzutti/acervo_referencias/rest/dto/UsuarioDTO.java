@@ -1,4 +1,4 @@
-package io.github.pedropizzutti.acervo_referencias.dto;
+package io.github.pedropizzutti.acervo_referencias.rest.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
