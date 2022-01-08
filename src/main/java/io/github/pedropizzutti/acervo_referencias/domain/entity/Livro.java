@@ -8,12 +8,12 @@ import javax.validation.constraints.NotEmpty;
 @Data
 @Entity
 @Table (name = "tb_referencias_bibliograficas")
-public class Livros {
+public class Livro {
 
     @Id
     @Column(name = "id_referencia")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Integer id;
 
     @Column(name = "autor_referencia", length = 100, nullable = false)
     @NotEmpty
@@ -24,7 +24,7 @@ public class Livros {
     private String titulo;
 
     @Column(name = "ano_referencia", length = 4)
-    private int ano;
+    private Integer ano;
 
     @Column(name = "referencia_referencia", length = 300, nullable = false)
     @NotEmpty
@@ -36,6 +36,5 @@ public class Livros {
     @ManyToOne
     @JoinColumn(name = "id_usuario_fk")
     private Usuario usuario;
-
 
 }

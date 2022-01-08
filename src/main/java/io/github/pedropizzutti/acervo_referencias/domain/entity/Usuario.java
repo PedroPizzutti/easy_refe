@@ -5,7 +5,6 @@ import lombok.Data;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Entity
@@ -15,7 +14,7 @@ public class Usuario {
     @Id
     @Column(name = "id_usuario")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Integer id;
 
     @Column(name = "login_usuario", length = 50, nullable = false)
     @NotEmpty
@@ -34,6 +33,6 @@ public class Usuario {
     private String email;
 
     @OneToMany(mappedBy = "usuario")
-    private List<Livros> livros;
+    private List<Livro> livros;
 
 }
