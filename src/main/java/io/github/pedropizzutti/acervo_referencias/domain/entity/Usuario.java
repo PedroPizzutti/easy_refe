@@ -4,6 +4,8 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -16,19 +18,22 @@ public class Usuario {
     private int id;
 
     @Column(name = "login_usuario", length = 50, nullable = false)
-    @NotEmpty(message = "Login obrigatório.")
+    @NotEmpty
     private String login;
 
     @Column(name = "senha_usuario", length = 75, nullable = false)
-    @NotEmpty(message = "senha obrigatória.")
+    @NotEmpty
     private String senha;
 
     @Column(name = "nome_usuario", length = 50, nullable = false)
-    @NotEmpty(message = "nome obrigatório.")
+    @NotEmpty
     private String nome;
 
     @Column(name = "email_usuario", length = 100, nullable = false)
-    @NotEmpty(message = "email obrigatório.")
+    @NotEmpty
     private String email;
+
+    @OneToMany(mappedBy = "usuario")
+    private List<Livros> livros;
 
 }
