@@ -56,16 +56,21 @@ public class UsuarioServiceImplemantation implements UsuarioService {
         }
     }
 
+
     @Override
-    public UsuarioDTO encontrarUsuarioPeloId(Integer id) throws RegraNegocioException {
+    public void deletarUsuario(Integer id) throws RegraNegocioException {
 
-        Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuário não encontrado!"));
+        Usuario usuario = encontrarUsuarioPeloId(id);
 
-        UsuarioDTO usuarioDTO = converterUsuarioParaUsuarioDTO(usuario);
+        usuarioRepository.delete(usuario);
 
-        return usuarioDTO;
     }
+
+    @Override
+    public UsuarioDTO atualizarUsuario(UsuarioDTO usuarioDTO) {
+        return null;
+    }
+
 
     @Override
     public List<UsuarioDTO> listarUsuarios(Integer paginaAtual){
@@ -85,6 +90,15 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
     // Métodos Auxiliares
 
+    @Override
+    public Usuario encontrarUsuarioPeloId(Integer id) throws RegraNegocioException {
+
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuário não encontrado!"));
+
+        return usuario;
+    }
+
     public UsuarioDTO converterUsuarioParaUsuarioDTO(Usuario usuario){
 
         UsuarioDTO usuarioDTO = new UsuarioDTO();
@@ -96,6 +110,7 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
         return usuarioDTO;
     }
+
 
     public boolean verificarDisponibilidadeDoLogin(String login){
 

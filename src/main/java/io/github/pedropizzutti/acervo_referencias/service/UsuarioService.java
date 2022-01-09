@@ -12,7 +12,11 @@ public interface UsuarioService {
 
     public Usuario salvar(UsuarioDTO usuarioDTO) throws RegraNegocioException;
 
-    public UsuarioDTO encontrarUsuarioPeloId(Integer id) throws RegraNegocioException;
+    public Usuario encontrarUsuarioPeloId(Integer id) throws RegraNegocioException;
+
+    public void deletarUsuario(Integer id) throws RegraNegocioException;
+
+    public UsuarioDTO atualizarUsuario(UsuarioDTO usuarioDTO);
 
     public List<UsuarioDTO> listarUsuarios(Integer pagina);
 

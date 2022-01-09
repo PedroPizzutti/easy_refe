@@ -32,7 +32,7 @@ public class UsuarioController {
             return loginUsuario;
         }
 
-    @GetMapping("/page{pagina}")
+    @GetMapping("/{pagina}")
     @ResponseStatus(HttpStatus.OK)
     public List<UsuarioDTO> listarUsuarios(@PathVariable Integer pagina){
 
@@ -42,14 +42,13 @@ public class UsuarioController {
 
     }
 
-    @GetMapping("/user{idUsuario}")
-    @ResponseStatus(HttpStatus.OK)
-    public UsuarioDTO encontrarUsuarioPeloId(@PathVariable Integer idUsuario) throws RegraNegocioException {
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletarUsuario(@PathVariable Integer id) throws RegraNegocioException {
 
-        UsuarioDTO usuarioDTO = usuarioService.encontrarUsuarioPeloId(idUsuario);
-
-        return usuarioDTO;
+        usuarioService.deletarUsuario(id);
 
     }
+    
 
 }
