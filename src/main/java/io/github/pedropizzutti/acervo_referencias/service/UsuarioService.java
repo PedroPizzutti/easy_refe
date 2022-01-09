@@ -12,18 +12,19 @@ public interface UsuarioService {
 
     public Usuario salvar(UsuarioDTO usuarioDTO) throws RegraNegocioException;
 
-    public Usuario encontrarUsuarioPeloId(Integer id) throws RegraNegocioException;
-
     public void deletarUsuario(Integer id) throws RegraNegocioException;
 
-    public UsuarioDTO atualizarUsuario(UsuarioDTO usuarioDTO);
+    UsuarioDTO atualizarUsuario(UsuarioDTO usuarioDTO, Integer id) throws RegraNegocioException;
 
     public List<UsuarioDTO> listarUsuarios(Integer pagina);
+
+    Usuario encontrarVerificarUsuarioPeloId(Integer id) throws RegraNegocioException;
 
     public UsuarioDTO converterUsuarioParaUsuarioDTO(Usuario usuario);
 
     public boolean verificarDisponibilidadeDoLogin(String login);
 
     public boolean verificarDisponibilidadeDoEmail(String email);
+
 
 }

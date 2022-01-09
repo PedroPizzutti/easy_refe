@@ -60,17 +60,28 @@ public class UsuarioServiceImplemantation implements UsuarioService {
     @Override
     public void deletarUsuario(Integer id) throws RegraNegocioException {
 
-        Usuario usuario = encontrarUsuarioPeloId(id);
+        Usuario usuario = encontrarVerificarUsuarioPeloId(id);
 
         usuarioRepository.delete(usuario);
 
     }
 
     @Override
-    public UsuarioDTO atualizarUsuario(UsuarioDTO usuarioDTO) {
-        return null;
-    }
+    public UsuarioDTO atualizarUsuario(UsuarioDTO usuarioDTO, Integer id) throws RegraNegocioException {
 
+        Usuario usuario = encontrarVerificarUsuarioPeloId(id);
+
+        usuario.setLogin(usuarioDTO.getLogin());
+        usuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
+        usuario.setNome(usuarioDTO.getNome());
+        usuario.setEmail(usuarioDTO.getEmail());
+
+        Usuario usuarioAtualizado = usuarioRepository.save(usuario);
+
+        UsuarioDTO usuarioDTOAtualizado = converterUsuarioParaUsuarioDTO(usuarioAtualizado);
+
+        return usuarioDTOAtualizado;
+    }
 
     @Override
     public List<UsuarioDTO> listarUsuarios(Integer paginaAtual){
@@ -91,7 +102,7 @@ public class UsuarioServiceImplemantation implements UsuarioService {
     // Métodos Auxiliares
 
     @Override
-    public Usuario encontrarUsuarioPeloId(Integer id) throws RegraNegocioException {
+    public Usuario encontrarVerificarUsuarioPeloId(Integer id) throws RegraNegocioException {
 
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuário não encontrado!"));
@@ -110,7 +121,6 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
         return usuarioDTO;
     }
-
 
     public boolean verificarDisponibilidadeDoLogin(String login){
 

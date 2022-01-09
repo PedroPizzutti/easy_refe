@@ -49,6 +49,15 @@ public class UsuarioController {
         usuarioService.deletarUsuario(id);
 
     }
-    
+
+    @PutMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public UsuarioDTO atualizarUsuario(@RequestBody UsuarioDTO usuarioDTO, @PathVariable Integer id) throws RegraNegocioException {
+
+        UsuarioDTO usuarioAtualizado = usuarioService.atualizarUsuario(usuarioDTO, id);
+
+        return usuarioAtualizado;
+
+    }
 
 }
