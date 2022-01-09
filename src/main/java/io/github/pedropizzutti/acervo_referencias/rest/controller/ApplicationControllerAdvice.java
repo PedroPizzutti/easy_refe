@@ -1,6 +1,7 @@
 package io.github.pedropizzutti.acervo_referencias.rest.controller;
 
 import io.github.pedropizzutti.acervo_referencias.exception.RegraNegocioException;
+import io.github.pedropizzutti.acervo_referencias.exception.UsuarioNaoEncontradoException;
 import io.github.pedropizzutti.acervo_referencias.rest.apiErrors.ApiErrors;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,6 +19,16 @@ public class ApplicationControllerAdvice {
     @ExceptionHandler(RegraNegocioException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrors handleRegraNegocioException(RegraNegocioException ex){
+
+        String mensagemErro = ex.getMessage();
+
+        return new ApiErrors(mensagemErro);
+
+    }
+
+    @ExceptionHandler(UsuarioNaoEncontradoException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiErrors handleUsuarioNaoEncontradoException(UsuarioNaoEncontradoException ex){
 
         String mensagemErro = ex.getMessage();
 

@@ -3,10 +3,9 @@ package io.github.pedropizzutti.acervo_referencias.service.implemantationService
 import io.github.pedropizzutti.acervo_referencias.domain.entity.Usuario;
 import io.github.pedropizzutti.acervo_referencias.domain.repository.UsuarioRepository;
 import io.github.pedropizzutti.acervo_referencias.exception.RegraNegocioException;
+import io.github.pedropizzutti.acervo_referencias.exception.UsuarioNaoEncontradoException;
 import io.github.pedropizzutti.acervo_referencias.rest.dto.UsuarioDTO;
 import io.github.pedropizzutti.acervo_referencias.service.UsuarioService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -57,11 +56,22 @@ public class UsuarioServiceImplemantation implements UsuarioService {
         }
     }
 
-    @Transactional
+    @Override
+    public UsuarioDTO encontrarUsuarioPeloId(Integer id) throws RegraNegocioException {
+
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuário não encontrado!"));
+
+        UsuarioDTO usuarioDTO = converterUsuarioParaUsuarioDTO(usuario);
+
+        return usuarioDTO;
+    }
+
+    @Override
     public List<UsuarioDTO> listarUsuarios(Integer paginaAtual){
         List<Usuario> listaUsuariosBanco = new ArrayList<>();
         List<UsuarioDTO> listaUsuariosDTO = new ArrayList<>();
-        Pageable pageable = PageRequest.of(paginaAtual,1);
+        Pageable pageable = PageRequest.of(paginaAtual,10);
 
         listaUsuariosBanco = usuarioRepository.findAll(pageable).toList();
         listaUsuariosDTO =

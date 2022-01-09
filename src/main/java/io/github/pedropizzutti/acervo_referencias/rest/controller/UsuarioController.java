@@ -42,6 +42,14 @@ public class UsuarioController {
 
     }
 
-    
+    @GetMapping("/user{idUsuario}")
+    @ResponseStatus(HttpStatus.OK)
+    public UsuarioDTO encontrarUsuarioPeloId(@PathVariable Integer idUsuario) throws RegraNegocioException {
+
+        UsuarioDTO usuarioDTO = usuarioService.encontrarUsuarioPeloId(idUsuario);
+
+        return usuarioDTO;
+
+    }
 
 }

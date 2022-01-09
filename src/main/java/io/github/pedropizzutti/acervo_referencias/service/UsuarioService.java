@@ -6,10 +6,13 @@ import io.github.pedropizzutti.acervo_referencias.rest.dto.UsuarioDTO;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UsuarioService {
 
     public Usuario salvar(UsuarioDTO usuarioDTO) throws RegraNegocioException;
+
+    public UsuarioDTO encontrarUsuarioPeloId(Integer id) throws RegraNegocioException;
 
     public List<UsuarioDTO> listarUsuarios(Integer pagina);
 
