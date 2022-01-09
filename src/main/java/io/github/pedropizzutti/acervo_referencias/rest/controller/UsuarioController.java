@@ -4,6 +4,7 @@ import io.github.pedropizzutti.acervo_referencias.domain.entity.Usuario;
 import io.github.pedropizzutti.acervo_referencias.exception.RegraNegocioException;
 import io.github.pedropizzutti.acervo_referencias.rest.dto.UsuarioDTO;
 import io.github.pedropizzutti.acervo_referencias.service.UsuarioService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,14 +32,16 @@ public class UsuarioController {
             return loginUsuario;
         }
 
-    @GetMapping()
+    @GetMapping("/page{pagina}")
     @ResponseStatus(HttpStatus.OK)
-    public List<UsuarioDTO> listarUsuarios(){
+    public List<UsuarioDTO> listarUsuarios(@PathVariable Integer pagina){
 
-        List<UsuarioDTO> listaUsuarios = usuarioService.listarUsuarios();
+        List<UsuarioDTO> listaPaginada = usuarioService.listarUsuarios(pagina-1);
 
-        return listaUsuarios;
+        return listaPaginada;
 
     }
+
+    
 
 }

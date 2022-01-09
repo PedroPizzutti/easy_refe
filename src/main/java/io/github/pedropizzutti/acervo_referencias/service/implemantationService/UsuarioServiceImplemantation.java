@@ -5,6 +5,10 @@ import io.github.pedropizzutti.acervo_referencias.domain.repository.UsuarioRepos
 import io.github.pedropizzutti.acervo_referencias.exception.RegraNegocioException;
 import io.github.pedropizzutti.acervo_referencias.rest.dto.UsuarioDTO;
 import io.github.pedropizzutti.acervo_referencias.service.UsuarioService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,26 +58,34 @@ public class UsuarioServiceImplemantation implements UsuarioService {
     }
 
     @Transactional
-    public List<UsuarioDTO> listarUsuarios(){
+    public List<UsuarioDTO> listarUsuarios(Integer paginaAtual){
         List<Usuario> listaUsuariosBanco = new ArrayList<>();
         List<UsuarioDTO> listaUsuariosDTO = new ArrayList<>();
+        Pageable pageable = PageRequest.of(paginaAtual,1);
 
-        listaUsuariosBanco = usuarioRepository.findAll();
+        listaUsuariosBanco = usuarioRepository.findAll(pageable).toList();
         listaUsuariosDTO =
             listaUsuariosBanco.stream().map(usuario -> {
-            UsuarioDTO usuarioDTO = new UsuarioDTO();
-            usuarioDTO.setId(usuario.getId());
-            usuarioDTO.setLogin(usuario.getLogin());
-            usuarioDTO.setSenha(usuario.getSenha());
-            usuarioDTO.setNome(usuario.getNome());
-            usuarioDTO.setEmail(usuario.getEmail());
+            UsuarioDTO usuarioDTO = converterUsuarioParaUsuarioDTO(usuario);
             return usuarioDTO;
         }).collect(Collectors.toList());
 
         return listaUsuariosDTO;
     }
 
+    // Métodos Auxiliares
 
+    public UsuarioDTO converterUsuarioParaUsuarioDTO(Usuario usuario){
+
+        UsuarioDTO usuarioDTO = new UsuarioDTO();
+        usuarioDTO.setId(usuario.getId());
+        usuarioDTO.setLogin(usuario.getLogin());
+        usuarioDTO.setSenha(usuario.getSenha());
+        usuarioDTO.setNome(usuario.getNome());
+        usuarioDTO.setEmail(usuario.getEmail());
+
+        return usuarioDTO;
+    }
 
     public boolean verificarDisponibilidadeDoLogin(String login){
 
