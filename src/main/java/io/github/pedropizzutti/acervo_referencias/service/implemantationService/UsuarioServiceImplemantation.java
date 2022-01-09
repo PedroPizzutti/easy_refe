@@ -5,6 +5,7 @@ import io.github.pedropizzutti.acervo_referencias.domain.repository.UsuarioRepos
 import io.github.pedropizzutti.acervo_referencias.exception.RegraNegocioException;
 import io.github.pedropizzutti.acervo_referencias.rest.dto.UsuarioDTO;
 import io.github.pedropizzutti.acervo_referencias.service.UsuarioService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,13 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class UsuarioServiceImplemantation implements UsuarioService {
 
     private UsuarioRepository usuarioRepository;
+    private PasswordEncoder passwordEncoder;
 
-    public UsuarioServiceImplemantation(UsuarioRepository usuarioRepository) {
+    public UsuarioServiceImplemantation(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
-
-    @Override
     @Transactional
     public Usuario salvar(UsuarioDTO usuarioDTO) throws RegraNegocioException {
 
@@ -38,7 +39,7 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
             Usuario usuario = new Usuario();
             usuario.setLogin(usuarioDTO.getLogin());
-            usuario.setSenha(usuarioDTO.getSenha());
+            usuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
             usuario.setEmail(usuarioDTO.getEmail());
             usuario.setNome(usuarioDTO.getNome());
 
@@ -46,8 +47,9 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
             return usuarioSalvo;
         }
-
     }
+
+
 
     public boolean verificarDisponibilidadeDoLogin(String login){
 

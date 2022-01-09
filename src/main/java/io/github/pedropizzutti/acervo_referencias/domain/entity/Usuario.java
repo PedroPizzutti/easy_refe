@@ -21,7 +21,7 @@ public class Usuario {
     @NotEmpty
     private String login;
 
-    @Column(name = "senha_usuario", length = 75, nullable = false)
+    @Column(name = "senha_usuario", length = 150, nullable = false)
     @NotEmpty
     private String senha;
 
