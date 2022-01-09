@@ -1,5 +1,6 @@
 package io.github.pedropizzutti.acervo_referencias.rest.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,7 @@ public class UsuarioDTO {
     @NotEmpty(message = "Campo Email Obrigatório!")
     private String email;
 
+    @JsonIgnore
     private List<LivroDTO> livros;
 
 }

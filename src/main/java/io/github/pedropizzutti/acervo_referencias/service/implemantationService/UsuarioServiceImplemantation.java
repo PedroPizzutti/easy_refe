@@ -9,6 +9,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class UsuarioServiceImplemantation implements UsuarioService {
 
@@ -47,6 +51,26 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
             return usuarioSalvo;
         }
+    }
+
+    @Transactional
+    public List<UsuarioDTO> listarUsuarios(){
+        List<Usuario> listaUsuariosBanco = new ArrayList<>();
+        List<UsuarioDTO> listaUsuariosDTO = new ArrayList<>();
+
+        listaUsuariosBanco = usuarioRepository.findAll();
+        listaUsuariosDTO =
+            listaUsuariosBanco.stream().map(usuario -> {
+            UsuarioDTO usuarioDTO = new UsuarioDTO();
+            usuarioDTO.setId(usuario.getId());
+            usuarioDTO.setLogin(usuario.getLogin());
+            usuarioDTO.setSenha(usuario.getSenha());
+            usuarioDTO.setNome(usuario.getNome());
+            usuarioDTO.setEmail(usuario.getEmail());
+            return usuarioDTO;
+        }).collect(Collectors.toList());
+
+        return listaUsuariosDTO;
     }
 
 
