@@ -6,8 +6,7 @@ import io.github.pedropizzutti.acervo_referencias.exception.RegraNegocioExceptio
 import io.github.pedropizzutti.acervo_referencias.exception.UsuarioNaoEncontradoException;
 import io.github.pedropizzutti.acervo_referencias.rest.dto.UsuarioDTO;
 import io.github.pedropizzutti.acervo_referencias.service.UsuarioService;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +18,7 @@ import java.util.stream.Collectors;
 @Service
 public class UsuarioServiceImplemantation implements UsuarioService {
 
+    private final Integer ELEMENTOS_POR_PAGINA = 10;
     private UsuarioRepository usuarioRepository;
     private PasswordEncoder passwordEncoder;
 
@@ -87,7 +87,7 @@ public class UsuarioServiceImplemantation implements UsuarioService {
     public List<UsuarioDTO> listarUsuarios(Integer paginaAtual){
         List<Usuario> listaUsuariosBanco = new ArrayList<>();
         List<UsuarioDTO> listaUsuariosDTO = new ArrayList<>();
-        Pageable pageable = PageRequest.of(paginaAtual,10);
+        Pageable pageable = PageRequest.of(paginaAtual,ELEMENTOS_POR_PAGINA, Sort.by("id"));
 
         listaUsuariosBanco = usuarioRepository.findAll(pageable).toList();
         listaUsuariosDTO =
@@ -97,6 +97,39 @@ public class UsuarioServiceImplemantation implements UsuarioService {
         }).collect(Collectors.toList());
 
         return listaUsuariosDTO;
+    }
+
+    @Override
+    public List<UsuarioDTO> listarUsuariosFiltro(UsuarioDTO usuarioDTOFiltro, Integer numeroPaginacao){
+
+        List<Usuario> listaUsuarioBanco = new ArrayList<>();
+        List<UsuarioDTO> listaUsuarioDTO = new ArrayList<>();
+
+        Usuario usuario = new Usuario();
+        usuario.setLogin(usuarioDTOFiltro.getLogin());
+        usuario.setNome(usuarioDTOFiltro.getNome());
+        usuario.setEmail(usuarioDTOFiltro.getEmail());
+
+        ExampleMatcher matcher =
+                ExampleMatcher
+                        .matching()
+                        .withIgnoreCase()
+                        .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+
+        Example exampleFiltro = Example.of(usuario, matcher);
+
+        Pageable configuracaoPagina = PageRequest.of(numeroPaginacao, ELEMENTOS_POR_PAGINA, Sort.by("login"));
+
+        listaUsuarioBanco = usuarioRepository.findAll(exampleFiltro, configuracaoPagina).toList();
+
+        listaUsuarioDTO =
+                listaUsuarioBanco.stream().map(user -> {
+                    UsuarioDTO usuarioDTO = converterUsuarioParaUsuarioDTO(user);
+                    return usuarioDTO;
+                }).collect(Collectors.toList());
+
+        return listaUsuarioDTO;
+
     }
 
     // Métodos Auxiliares
@@ -110,6 +143,7 @@ public class UsuarioServiceImplemantation implements UsuarioService {
         return usuario;
     }
 
+    @Override
     public UsuarioDTO converterUsuarioParaUsuarioDTO(Usuario usuario){
 
         UsuarioDTO usuarioDTO = new UsuarioDTO();
@@ -122,6 +156,7 @@ public class UsuarioServiceImplemantation implements UsuarioService {
         return usuarioDTO;
     }
 
+    @Override
     public boolean verificarDisponibilidadeDoLogin(String login){
 
         boolean loginDisponivel = usuarioRepository.existsByLogin(login);
@@ -130,6 +165,7 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
     }
 
+    @Override
     public boolean verificarDisponibilidadeDoEmail(String email){
 
         boolean emailDisponivel = usuarioRepository.existsByEmail(email);

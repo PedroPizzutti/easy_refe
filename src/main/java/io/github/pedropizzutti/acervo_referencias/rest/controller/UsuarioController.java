@@ -32,13 +32,25 @@ public class UsuarioController {
             return loginUsuario;
         }
 
-    @GetMapping("/{pagina}")
+    @GetMapping("/page{pagina}")
     @ResponseStatus(HttpStatus.OK)
     public List<UsuarioDTO> listarUsuarios(@PathVariable Integer pagina){
 
-        List<UsuarioDTO> listaPaginada = usuarioService.listarUsuarios(pagina-1);
+        List<UsuarioDTO> listaUsuarios = usuarioService.listarUsuarios(pagina-1);
 
-        return listaPaginada;
+        return listaUsuarios;
+
+    }
+
+    @GetMapping("/filterPage{paginaFiltro}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UsuarioDTO> pesquisarUsuarios(
+            @RequestBody UsuarioDTO usuarioDTOFiltro, @PathVariable Integer paginaFiltro){
+
+        List<UsuarioDTO> listaFiltradaUsuarios =
+                usuarioService.listarUsuariosFiltro(usuarioDTOFiltro, paginaFiltro-1);
+
+        return listaFiltradaUsuarios;
 
     }
 
