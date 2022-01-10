@@ -11,6 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.Valid;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -81,6 +83,17 @@ public class UsuarioServiceImplemantation implements UsuarioService {
         UsuarioDTO usuarioDTOAtualizado = converterUsuarioParaUsuarioDTO(usuarioAtualizado);
 
         return usuarioDTOAtualizado;
+    }
+
+    @Override
+    public void atualizarEmailUsuario(@Valid String novoEmail, Integer idUsuario) throws RegraNegocioException{
+
+        Usuario usuario = encontrarVerificarUsuarioPeloId(idUsuario);
+
+        usuario.setEmail(novoEmail);
+
+        usuarioRepository.save(usuario);
+
     }
 
     @Override

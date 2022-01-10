@@ -61,13 +61,21 @@ public class UsuarioController {
 
     }
 
-    @PutMapping("{id}")
+    @PutMapping("{idUsuario}")
     @ResponseStatus(HttpStatus.OK)
-    public UsuarioDTO atualizarUsuario(@RequestBody UsuarioDTO usuarioDTO, @PathVariable Integer id) throws RegraNegocioException {
+    public UsuarioDTO atualizarUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO, @PathVariable Integer idUsuario) throws RegraNegocioException {
 
-        UsuarioDTO usuarioAtualizado = usuarioService.atualizarUsuario(usuarioDTO, id);
+        UsuarioDTO usuarioAtualizado = usuarioService.atualizarUsuario(usuarioDTO, idUsuario);
 
         return usuarioAtualizado;
+
+    }
+
+    @PutMapping("attUserEmail/{idUsuario}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void atualizarEmailUsuario(@RequestBody String novoEmail, @PathVariable Integer idUsuario) throws RegraNegocioException {
+
+        usuarioService.atualizarEmailUsuario(novoEmail, idUsuario);
 
     }
 
