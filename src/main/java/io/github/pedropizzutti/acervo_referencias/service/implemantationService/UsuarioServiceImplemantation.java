@@ -100,35 +100,50 @@ public class UsuarioServiceImplemantation implements UsuarioService {
     }
 
     @Override
-    public List<UsuarioDTO> listarUsuariosFiltro(UsuarioDTO usuarioDTOFiltro, Integer numeroPaginacao){
+    public List<UsuarioDTO> listarUsuariosFiltro(UsuarioDTO usuarioDTOFiltro, Integer numeroPaginacao) throws RegraNegocioException {
 
         List<Usuario> listaUsuarioBanco = new ArrayList<>();
         List<UsuarioDTO> listaUsuarioDTO = new ArrayList<>();
 
-        Usuario usuario = new Usuario();
-        usuario.setLogin(usuarioDTOFiltro.getLogin());
-        usuario.setNome(usuarioDTOFiltro.getNome());
-        usuario.setEmail(usuarioDTOFiltro.getEmail());
+        String login = usuarioDTOFiltro.getLogin();
+        String nome = usuarioDTOFiltro.getNome();
+        String email = usuarioDTOFiltro.getEmail();
 
-        ExampleMatcher matcher =
-                ExampleMatcher
-                        .matching()
-                        .withIgnoreCase()
-                        .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+        if((login.equals("") || login == null) &&
+                (nome.equals("") || nome == null) &&
+                (email.equals("") || email == null)
+        ){
 
-        Example exampleFiltro = Example.of(usuario, matcher);
+            throw new RegraNegocioException("Nenhum dado informado para consulta...");
 
-        Pageable configuracaoPagina = PageRequest.of(numeroPaginacao, ELEMENTOS_POR_PAGINA, Sort.by("login"));
+        } else {
 
-        listaUsuarioBanco = usuarioRepository.findAll(exampleFiltro, configuracaoPagina).toList();
+            Usuario usuario = new Usuario();
+            usuario.setLogin(login);
+            usuario.setNome(nome);
+            usuario.setEmail(email);
 
-        listaUsuarioDTO =
-                listaUsuarioBanco.stream().map(user -> {
-                    UsuarioDTO usuarioDTO = converterUsuarioParaUsuarioDTO(user);
-                    return usuarioDTO;
-                }).collect(Collectors.toList());
+                ExampleMatcher matcher =
+                        ExampleMatcher
+                                .matching()
+                                .withIgnoreCase()
+                                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
 
-        return listaUsuarioDTO;
+            Example exampleFiltro = Example.of(usuario, matcher);
+
+            Pageable configuracaoPagina = PageRequest.of(numeroPaginacao, ELEMENTOS_POR_PAGINA, Sort.by("login"));
+
+            listaUsuarioBanco = usuarioRepository.findAll(exampleFiltro, configuracaoPagina).toList();
+
+            listaUsuarioDTO =
+                    listaUsuarioBanco.stream().map(user -> {
+                        UsuarioDTO usuarioDTO = converterUsuarioParaUsuarioDTO(user);
+                        return usuarioDTO;
+                    }).collect(Collectors.toList());
+
+            return listaUsuarioDTO;
+
+        }
 
     }
 

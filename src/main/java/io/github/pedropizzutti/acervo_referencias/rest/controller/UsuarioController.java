@@ -4,7 +4,6 @@ import io.github.pedropizzutti.acervo_referencias.domain.entity.Usuario;
 import io.github.pedropizzutti.acervo_referencias.exception.RegraNegocioException;
 import io.github.pedropizzutti.acervo_referencias.rest.dto.UsuarioDTO;
 import io.github.pedropizzutti.acervo_referencias.service.UsuarioService;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,7 +44,7 @@ public class UsuarioController {
     @GetMapping("/filterPage{paginaFiltro}")
     @ResponseStatus(HttpStatus.OK)
     public List<UsuarioDTO> pesquisarUsuarios(
-            @RequestBody UsuarioDTO usuarioDTOFiltro, @PathVariable Integer paginaFiltro){
+            @RequestBody UsuarioDTO usuarioDTOFiltro, @PathVariable Integer paginaFiltro) throws RegraNegocioException {
 
         List<UsuarioDTO> listaFiltradaUsuarios =
                 usuarioService.listarUsuariosFiltro(usuarioDTOFiltro, paginaFiltro-1);
