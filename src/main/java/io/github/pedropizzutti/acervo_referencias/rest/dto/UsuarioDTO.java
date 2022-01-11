@@ -19,19 +19,19 @@ public class UsuarioDTO {
 
     private Integer id;
 
-    @NotEmpty(message = "Campo Login Obrigatório!")
-    @Length(min = 4, max = 30)
+    @NotEmpty(message = "{campo.usuario.login.obrigatorio}")
+    @Length(min = 4, max = 30, message = "{campo.usuario.login.comprimento}")
     private String login;
 
-    @NotEmpty(message = "Campo Senha Obrigatório!")
-    @Length(min = 8, max = 70)
+    @NotEmpty(message = "{campo.usuario.senha.obrigatorio}")
+    @Length(min = 8, max = 50, message = "{campo.usuario.senha.comprimento}")
     private String senha;
 
-    @NotEmpty(message = "Campo Nome Obrigatório!")
-    @Length(min = 4, max = 100)
+    @NotEmpty(message = "{campo.usuario.nome.obrigatorio}")
+    @Length(min = 4, max = 100, message = "{campo.usuario.nome.comprimento}")
     private String nome;
 
-    @NotEmpty(message = "Campo Email Obrigatório!")
+    @NotEmpty(message = "{campo.usuario.login.obrigatorio}")
     @Email(message = "Insira um Email Válido.")
     private String email;
 
