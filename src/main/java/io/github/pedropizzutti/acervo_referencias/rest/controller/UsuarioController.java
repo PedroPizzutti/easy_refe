@@ -63,7 +63,7 @@ public class UsuarioController {
 
     @PutMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UsuarioDTO atualizarUsuario(@RequestBody UsuarioDTO usuarioDTO, @PathVariable Integer id) throws RegraNegocioException {
+    public UsuarioDTO atualizarUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO, @PathVariable Integer id) throws RegraNegocioException {
 
         UsuarioDTO usuarioAtualizado = usuarioService.atualizarUsuario(usuarioDTO, id);
 
