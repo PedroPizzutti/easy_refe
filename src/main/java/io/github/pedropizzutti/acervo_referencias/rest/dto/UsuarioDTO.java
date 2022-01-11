@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
@@ -25,7 +24,7 @@ public class UsuarioDTO {
     @NotEmpty(message = "Campo Nome Obrigatório!")
     private String nome;
 
-    @Email(message = "Campo Email Obrigatório!")
+    @NotEmpty(message = "Campo Email Obrigatório!")
     private String email;
 
     @JsonIgnore
