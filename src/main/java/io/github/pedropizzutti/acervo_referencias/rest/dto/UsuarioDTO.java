@@ -1,6 +1,7 @@
 package io.github.pedropizzutti.acervo_referencias.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.github.pedropizzutti.acervo_referencias.validation.Password;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class UsuarioDTO {
 
     @NotEmpty(message = "{campo.usuario.senha.obrigatorio}")
     @Length(min = 8, max = 50, message = "{campo.usuario.senha.comprimento}")
+    @Password
     private String senha;
 
     @NotEmpty(message = "{campo.usuario.nome.obrigatorio}")
