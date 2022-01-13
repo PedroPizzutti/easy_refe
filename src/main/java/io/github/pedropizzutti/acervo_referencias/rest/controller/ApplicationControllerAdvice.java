@@ -35,7 +35,7 @@ public class ApplicationControllerAdvice {
         return new ApiErrors(mensagemErro);
 
     }
-
+    
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrors handleMethodNotValidException(MethodArgumentNotValidException ex){

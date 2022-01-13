@@ -21,7 +21,7 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    @PostMapping()
+    @PostMapping("/newUser")
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody UsuarioDTO salvarNovoUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO) throws RegraNegocioException {
 
@@ -31,7 +31,7 @@ public class UsuarioController {
 
         }
 
-    @GetMapping("/page{pagina}")
+    @GetMapping("/admin/page{pagina}")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody List<UsuarioDTO> listarUsuarios(@PathVariable Integer pagina){
 
@@ -41,7 +41,7 @@ public class UsuarioController {
 
     }
 
-    @GetMapping("/filterPage{paginaFiltro}")
+    @GetMapping("/admin/filterPage{paginaFiltro}")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody List<UsuarioDTO> pesquisarUsuarios(
             @RequestBody UsuarioDTO usuarioDTOFiltro, @PathVariable Integer paginaFiltro) throws RegraNegocioException {
@@ -53,7 +53,7 @@ public class UsuarioController {
 
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletarUsuario(@PathVariable Integer id) throws RegraNegocioException {
 
@@ -61,7 +61,7 @@ public class UsuarioController {
 
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/admin/{id}")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody UsuarioDTO atualizarUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO, @PathVariable Integer id) throws RegraNegocioException {
 
@@ -71,7 +71,7 @@ public class UsuarioController {
 
     }
 
-    @PatchMapping("/attUserEmail/{id}")
+    @PatchMapping("/att/userEmail{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void atualizarEmailUsuario(@RequestBody @Valid EmailDTO emailDTO, @PathVariable Integer id) throws RegraNegocioException {
 
@@ -81,7 +81,7 @@ public class UsuarioController {
 
     }
 
-    @PatchMapping("attUserPass/{id}")
+    @PatchMapping("/att/userPass{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void atualizarSenhaUsuario(@RequestBody @Valid SenhaDTO senhaDTO, @PathVariable Integer id) throws RegraNegocioException{
 
