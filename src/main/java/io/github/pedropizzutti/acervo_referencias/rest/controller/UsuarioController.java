@@ -2,6 +2,7 @@ package io.github.pedropizzutti.acervo_referencias.rest.controller;
 
 import io.github.pedropizzutti.acervo_referencias.exception.RegraNegocioException;
 import io.github.pedropizzutti.acervo_referencias.rest.dto.EmailDTO;
+import io.github.pedropizzutti.acervo_referencias.rest.dto.SenhaDTO;
 import io.github.pedropizzutti.acervo_referencias.rest.dto.UsuarioDTO;
 import io.github.pedropizzutti.acervo_referencias.service.UsuarioService;
 import org.springframework.http.HttpStatus;
@@ -71,12 +72,25 @@ public class UsuarioController {
     }
 
     @PatchMapping("/attUserEmail/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void atualizarEmailUsuario(@RequestBody EmailDTO novoEmail, @PathVariable Integer id) throws RegraNegocioException {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void atualizarEmailUsuario(@RequestBody @Valid EmailDTO emailDTO, @PathVariable Integer id) throws RegraNegocioException {
 
-        String novoEmailUsuario = novoEmail.getNovoEmail();
+        String novoEmail = emailDTO.getNovoEmail();
 
-        usuarioService.atualizarEmailUsuario(novoEmailUsuario, id);
+        usuarioService.atualizarEmailUsuario(novoEmail, id);
+
+    }
+
+    @PatchMapping("attUserPass/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void atualizarSenhaUsuario(@RequestBody @Valid SenhaDTO senhaDTO, @PathVariable Integer id) throws RegraNegocioException{
+
+        String senhaAtual = senhaDTO.getSenhaAtual();
+        String novaSenha = senhaDTO.getNovaSenha();
+        String confirmacaoNovaSenha = senhaDTO.getConfirmacaoNovaSenha();
+
+        usuarioService.atualizarSenhaUsuario(senhaAtual, novaSenha, confirmacaoNovaSenha, id);
+
 
     }
 

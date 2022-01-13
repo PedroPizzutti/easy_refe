@@ -97,6 +97,37 @@ public class UsuarioServiceImplemantation implements UsuarioService {
     }
 
     @Override
+    public void atualizarSenhaUsuario(String senhaAtual, String novaSenha, String confirmacaoNovaSenha, Integer id)
+            throws RegraNegocioException {
+
+        Usuario usuario = puxarUsuarioPeloId(id);
+
+        boolean senhaAtualCorreta = passwordEncoder.matches(senhaAtual, usuario.getSenha());
+
+        if(senhaAtualCorreta){
+
+            boolean novaSenhaConfirmada = novaSenha.equals(confirmacaoNovaSenha);
+
+            if(novaSenhaConfirmada){
+
+                usuario.setSenha(passwordEncoder.encode(novaSenha));
+
+                usuarioRepository.save(usuario);
+
+            } else {
+
+                throw new RegraNegocioException("A nova senha não foi confirmada.");
+
+            }
+        } else {
+
+            throw new RegraNegocioException("Senha atual incorreta.");
+
+        }
+
+    }
+
+    @Override
     public List<UsuarioDTO> listarUsuarios(Integer paginaAtual){
         List<Usuario> listaUsuariosBanco = new ArrayList<>();
         List<UsuarioDTO> listaUsuariosDTO = new ArrayList<>();

@@ -18,6 +18,8 @@ public interface UsuarioService {
 
     void atualizarEmailUsuario(String novoEmail, Integer id) throws RegraNegocioException;
 
+    void atualizarSenhaUsuario(String senhaAtual, String novaSenha, String confirmacaoNovaSenha, Integer id) throws RegraNegocioException;
+
     public List<UsuarioDTO> listarUsuarios(Integer numeroPaginacao);
 
     List<UsuarioDTO> listarUsuariosFiltro(UsuarioDTO usuarioDTOFiltro, Integer numeroPaginacao) throws RegraNegocioException;
