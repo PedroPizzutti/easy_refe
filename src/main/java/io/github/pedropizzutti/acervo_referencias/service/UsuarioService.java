@@ -16,11 +16,15 @@ public interface UsuarioService {
 
     UsuarioDTO atualizarUsuario(UsuarioDTO usuarioDTO, Integer id) throws RegraNegocioException;
 
+    void atualizarEmailUsuario(String novoEmail, Integer id) throws RegraNegocioException;
+
     public List<UsuarioDTO> listarUsuarios(Integer numeroPaginacao);
 
     List<UsuarioDTO> listarUsuariosFiltro(UsuarioDTO usuarioDTOFiltro, Integer numeroPaginacao) throws RegraNegocioException;
 
-    Usuario encontrarVerificarUsuarioPeloId(Integer id) throws RegraNegocioException;
+    Usuario puxarUsuarioPeloId(Integer id) throws RegraNegocioException;
+
+    boolean validarEmail(String email) throws RegraNegocioException;
 
     public UsuarioDTO converterUsuarioParaUsuarioDTO(Usuario usuario);
 

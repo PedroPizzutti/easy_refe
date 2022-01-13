@@ -71,4 +71,12 @@ public class UsuarioController {
 
     }
 
+    @PutMapping("/attUserEmail/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void atualizarEmailUsuario(@RequestBody String novoEmail, @PathVariable Integer id) throws RegraNegocioException {
+
+        usuarioService.atualizarEmailUsuario(novoEmail, id);
+
+    }
+
 }

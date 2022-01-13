@@ -60,7 +60,7 @@ public class UsuarioServiceImplemantation implements UsuarioService {
     @Override
     public void deletarUsuario(Integer id) throws RegraNegocioException {
 
-        Usuario usuario = encontrarVerificarUsuarioPeloId(id);
+        Usuario usuario = puxarUsuarioPeloId(id);
 
         usuarioRepository.delete(usuario);
 
@@ -69,7 +69,7 @@ public class UsuarioServiceImplemantation implements UsuarioService {
     @Override
     public UsuarioDTO atualizarUsuario(UsuarioDTO usuarioDTO, Integer id) throws RegraNegocioException {
 
-        Usuario usuario = encontrarVerificarUsuarioPeloId(id);
+        Usuario usuario = puxarUsuarioPeloId(id);
 
         usuario.setLogin(usuarioDTO.getLogin());
         usuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
@@ -81,6 +81,25 @@ public class UsuarioServiceImplemantation implements UsuarioService {
         UsuarioDTO usuarioDTOAtualizado = converterUsuarioParaUsuarioDTO(usuarioAtualizado);
 
         return usuarioDTOAtualizado;
+    }
+
+    @Override
+    public void atualizarEmailUsuario(String novoEmail, Integer id) throws RegraNegocioException {
+
+        boolean emailIsValid = validarEmail(novoEmail);
+
+        if(emailIsValid == true){
+
+            Usuario usuario = puxarUsuarioPeloId(id);
+
+            usuario.setEmail(novoEmail);
+
+            usuarioRepository.save(usuario);
+
+        } else {
+            throw new RegraNegocioException("Insira um Email válido.");
+        }
+
     }
 
     @Override
@@ -150,12 +169,20 @@ public class UsuarioServiceImplemantation implements UsuarioService {
     // Métodos Auxiliares
 
     @Override
-    public Usuario encontrarVerificarUsuarioPeloId(Integer id) throws RegraNegocioException {
+    public Usuario puxarUsuarioPeloId(Integer id) throws RegraNegocioException {
 
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuário não encontrado!"));
 
         return usuario;
+    }
+
+    @Override
+    public boolean validarEmail(String email) throws RegraNegocioException {
+
+        boolean emailIsValid = email.contains("@");
+
+        return emailIsValid;
     }
 
     @Override
