@@ -28,7 +28,7 @@ public class UsuarioServiceImplemantation implements UsuarioService {
     }
 
     @Transactional
-    public Usuario salvar(UsuarioDTO usuarioDTO) throws RegraNegocioException {
+    public UsuarioDTO salvar(UsuarioDTO usuarioDTO) throws RegraNegocioException {
 
         boolean loginNaoDisponivel = verificarDisponibilidadeDoLogin(usuarioDTO.getLogin());
 
@@ -52,7 +52,9 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
             Usuario usuarioSalvo = usuarioRepository.save(usuario);
 
-            return usuarioSalvo;
+            UsuarioDTO usuarioSalvoDTO = converterUsuarioParaUsuarioDTO(usuarioSalvo);
+
+            return usuarioSalvoDTO;
         }
     }
 
@@ -86,19 +88,11 @@ public class UsuarioServiceImplemantation implements UsuarioService {
     @Override
     public void atualizarEmailUsuario(String novoEmail, Integer id) throws RegraNegocioException {
 
-        boolean emailIsValid = validarEmail(novoEmail);
-
-        if(emailIsValid == true){
-
             Usuario usuario = puxarUsuarioPeloId(id);
 
             usuario.setEmail(novoEmail);
 
             usuarioRepository.save(usuario);
-
-        } else {
-            throw new RegraNegocioException("Insira um Email válido.");
-        }
 
     }
 
@@ -175,14 +169,6 @@ public class UsuarioServiceImplemantation implements UsuarioService {
                 .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuário não encontrado!"));
 
         return usuario;
-    }
-
-    @Override
-    public boolean validarEmail(String email) throws RegraNegocioException {
-
-        boolean emailIsValid = email.contains("@");
-
-        return emailIsValid;
     }
 
     @Override

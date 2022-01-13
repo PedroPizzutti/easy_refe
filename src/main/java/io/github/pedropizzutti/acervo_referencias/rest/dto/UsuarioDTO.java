@@ -33,7 +33,7 @@ public class UsuarioDTO {
     @Length(min = 4, max = 100, message = "{campo.usuario.nome.comprimento}")
     private String nome;
 
-    @NotEmpty(message = "{campo.usuario.login.obrigatorio}")
+    @NotEmpty(message = "{campo.usuario.email.obrigatorio}")
     @Email(message = "Insira um Email Válido.")
     private String email;
 

@@ -1,7 +1,7 @@
 package io.github.pedropizzutti.acervo_referencias.rest.controller;
 
-import io.github.pedropizzutti.acervo_referencias.domain.entity.Usuario;
 import io.github.pedropizzutti.acervo_referencias.exception.RegraNegocioException;
+import io.github.pedropizzutti.acervo_referencias.rest.dto.EmailDTO;
 import io.github.pedropizzutti.acervo_referencias.rest.dto.UsuarioDTO;
 import io.github.pedropizzutti.acervo_referencias.service.UsuarioService;
 import org.springframework.http.HttpStatus;
@@ -22,18 +22,17 @@ public class UsuarioController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public String salvarNovoUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO) throws RegraNegocioException {
+    public @ResponseBody UsuarioDTO salvarNovoUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO) throws RegraNegocioException {
 
-            Usuario usuarioSalvo = usuarioService.salvar(usuarioDTO);
+            UsuarioDTO usuarioSalvoDTO = usuarioService.salvar(usuarioDTO);
 
-            String loginUsuario = usuarioSalvo.getLogin();
+            return usuarioSalvoDTO;
 
-            return loginUsuario;
         }
 
     @GetMapping("/page{pagina}")
     @ResponseStatus(HttpStatus.OK)
-    public List<UsuarioDTO> listarUsuarios(@PathVariable Integer pagina){
+    public @ResponseBody List<UsuarioDTO> listarUsuarios(@PathVariable Integer pagina){
 
         List<UsuarioDTO> listaUsuarios = usuarioService.listarUsuarios(pagina-1);
 
@@ -43,7 +42,7 @@ public class UsuarioController {
 
     @GetMapping("/filterPage{paginaFiltro}")
     @ResponseStatus(HttpStatus.OK)
-    public List<UsuarioDTO> pesquisarUsuarios(
+    public @ResponseBody List<UsuarioDTO> pesquisarUsuarios(
             @RequestBody UsuarioDTO usuarioDTOFiltro, @PathVariable Integer paginaFiltro) throws RegraNegocioException {
 
         List<UsuarioDTO> listaFiltradaUsuarios =
@@ -63,19 +62,21 @@ public class UsuarioController {
 
     @PutMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UsuarioDTO atualizarUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO, @PathVariable Integer id) throws RegraNegocioException {
+    public @ResponseBody UsuarioDTO atualizarUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO, @PathVariable Integer id) throws RegraNegocioException {
 
-        UsuarioDTO usuarioAtualizado = usuarioService.atualizarUsuario(usuarioDTO, id);
+        UsuarioDTO usuarioAtualizadoDTO = usuarioService.atualizarUsuario(usuarioDTO, id);
 
-        return usuarioAtualizado;
+        return usuarioAtualizadoDTO;
 
     }
 
-    @PutMapping("/attUserEmail/{id}")
+    @PatchMapping("/attUserEmail/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void atualizarEmailUsuario(@RequestBody String novoEmail, @PathVariable Integer id) throws RegraNegocioException {
+    public void atualizarEmailUsuario(@RequestBody EmailDTO novoEmail, @PathVariable Integer id) throws RegraNegocioException {
 
-        usuarioService.atualizarEmailUsuario(novoEmail, id);
+        String novoEmailUsuario = novoEmail.getNovoEmail();
+
+        usuarioService.atualizarEmailUsuario(novoEmailUsuario, id);
 
     }
 
