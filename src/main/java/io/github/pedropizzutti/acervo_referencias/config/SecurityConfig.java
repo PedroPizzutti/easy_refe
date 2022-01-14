@@ -1,5 +1,8 @@
 package io.github.pedropizzutti.acervo_referencias.config;
 
+import io.github.pedropizzutti.acervo_referencias.service.implemantationService.UsuarioDetalhesImplemantation;
+import io.github.pedropizzutti.acervo_referencias.service.implemantationService.UsuarioServiceImplemantation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -12,6 +15,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private UsuarioDetalhesImplemantation userDetails;
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -19,11 +25,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .passwordEncoder(passwordEncoder())
-                .withUser("ADMIN")
-                .password(passwordEncoder().encode("123"))
-                .roles("ADMIN");
+
+        auth
+                .userDetailsService(userDetails)
+                .passwordEncoder(passwordEncoder());
     }
 
     @Override
@@ -33,9 +38,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/api/usuario/newUser")
                         .permitAll()
                     .antMatchers("/api/usuario/att/**")
-                        .authenticated()
+                        .hasRole("USER")
                     .antMatchers("/api/usuario/admin/**")
                         .hasRole("ADMIN")
+                    .anyRequest()
+                        .authenticated()
                 .and()
                 .httpBasic();
     }

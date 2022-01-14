@@ -6,6 +6,7 @@ import io.github.pedropizzutti.acervo_referencias.rest.dto.SenhaDTO;
 import io.github.pedropizzutti.acervo_referencias.rest.dto.UsuarioDTO;
 import io.github.pedropizzutti.acervo_referencias.service.UsuarioService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,6 +20,7 @@ public class UsuarioController {
 
     public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
+
     }
 
     @PostMapping("/newUser")
@@ -93,5 +95,6 @@ public class UsuarioController {
 
 
     }
+
 
 }

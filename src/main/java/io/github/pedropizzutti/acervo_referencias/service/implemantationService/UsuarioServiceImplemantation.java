@@ -27,6 +27,7 @@ public class UsuarioServiceImplemantation implements UsuarioService {
         this.passwordEncoder = passwordEncoder;
     }
 
+
     @Transactional
     public UsuarioDTO salvar(UsuarioDTO usuarioDTO) throws RegraNegocioException {
 
@@ -49,6 +50,7 @@ public class UsuarioServiceImplemantation implements UsuarioService {
             usuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
             usuario.setEmail(usuarioDTO.getEmail());
             usuario.setNome(usuarioDTO.getNome());
+            usuario.setAdmin(usuarioDTO.isAdmin());
 
             Usuario usuarioSalvo = usuarioRepository.save(usuario);
 
@@ -77,6 +79,7 @@ public class UsuarioServiceImplemantation implements UsuarioService {
         usuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
         usuario.setNome(usuarioDTO.getNome());
         usuario.setEmail(usuarioDTO.getEmail());
+        usuario.setAdmin(usuarioDTO.isAdmin());
 
         Usuario usuarioAtualizado = usuarioRepository.save(usuario);
 
@@ -211,6 +214,7 @@ public class UsuarioServiceImplemantation implements UsuarioService {
         usuarioDTO.setSenha(usuario.getSenha());
         usuarioDTO.setNome(usuario.getNome());
         usuarioDTO.setEmail(usuario.getEmail());
+        usuarioDTO.setAdmin(usuario.isAdmin());
 
         return usuarioDTO;
     }
@@ -232,5 +236,6 @@ public class UsuarioServiceImplemantation implements UsuarioService {
         return emailDisponivel;
 
     }
+
 
 }

@@ -29,6 +29,9 @@ public class Usuario {
     @Column(name = "email_usuario", length = 100, nullable = false, unique = true)
     private String email;
 
+    @Column(name = "admin_usuario")
+    private boolean admin;
+
     @OneToMany(mappedBy = "usuario")
     private List<Livro> livros;
 
