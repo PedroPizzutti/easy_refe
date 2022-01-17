@@ -31,7 +31,7 @@ public class Livro {
     private String referencia;
 
     @Column(name = "anotacoes_referencia", length = 300)
-    private String anotacoes;
+    private String anotacao;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario_fk")
