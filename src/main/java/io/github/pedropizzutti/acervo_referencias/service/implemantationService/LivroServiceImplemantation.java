@@ -8,6 +8,7 @@ import io.github.pedropizzutti.acervo_referencias.exception.RegraNegocioExceptio
 import io.github.pedropizzutti.acervo_referencias.rest.dto.LivroDTO;
 import io.github.pedropizzutti.acervo_referencias.service.LivroService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class LivroServiceImplemantation implements LivroService {
@@ -21,13 +22,14 @@ public class LivroServiceImplemantation implements LivroService {
     }
 
     @Override
+    @Transactional
     public LivroDTO salvarLivro(LivroDTO livroDTO) throws RegraNegocioException {
 
-        Livro livroSalvar = converterDTOEntity(livroDTO);
+        Livro livroSalvar = converterLivroDTOParaLivro(livroDTO);
 
         Livro livroSalvo = livroRepository.save(livroSalvar);
 
-        LivroDTO livroDTOSalvo = converterEntityDTO(livroSalvo);
+        LivroDTO livroDTOSalvo = converterLivroParaLivroDTO(livroSalvo);
 
         return livroDTOSalvo;
 
@@ -35,7 +37,7 @@ public class LivroServiceImplemantation implements LivroService {
 
     // Métodos Auxiliares
 
-    private Livro converterDTOEntity(LivroDTO livroDTO) throws RegraNegocioException {
+    private Livro converterLivroDTOParaLivro(LivroDTO livroDTO) throws RegraNegocioException {
 
         Integer idUsuario = livroDTO.getIdUsuario();
 
@@ -54,7 +56,7 @@ public class LivroServiceImplemantation implements LivroService {
 
     }
 
-    private LivroDTO converterEntityDTO(Livro livro){
+    private LivroDTO converterLivroParaLivroDTO(Livro livro){
 
         LivroDTO livroDTO = new LivroDTO();
         livroDTO.setIdRegistro(livro.getId());

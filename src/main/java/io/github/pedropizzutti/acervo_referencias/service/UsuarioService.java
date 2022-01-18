@@ -10,9 +10,9 @@ import java.util.Optional;
 
 public interface UsuarioService {
 
-    public UsuarioDTO salvar(UsuarioDTO usuarioDTO) throws RegraNegocioException;
+    UsuarioDTO salvar(UsuarioDTO usuarioDTO) throws RegraNegocioException;
 
-    public void deletarUsuario(Integer id) throws RegraNegocioException;
+    void deletarUsuario(Integer id) throws RegraNegocioException;
 
     UsuarioDTO atualizarUsuario(UsuarioDTO usuarioDTO, Integer id) throws RegraNegocioException;
 
@@ -20,17 +20,8 @@ public interface UsuarioService {
 
     void atualizarSenhaUsuario(String senhaAtual, String novaSenha, String confirmacaoNovaSenha, Integer id) throws RegraNegocioException;
 
-    public List<UsuarioDTO> listarUsuarios(Integer numeroPaginacao);
+    List<UsuarioDTO> listarUsuarios(Integer numeroPaginacao);
 
     List<UsuarioDTO> listarUsuariosFiltro(UsuarioDTO usuarioDTOFiltro, Integer numeroPaginacao) throws RegraNegocioException;
-
-    Usuario puxarUsuarioPeloId(Integer id) throws RegraNegocioException;
-
-    public UsuarioDTO converterUsuarioParaUsuarioDTO(Usuario usuario);
-
-    public boolean verificarDisponibilidadeDoLogin(String login);
-
-    public boolean verificarDisponibilidadeDoEmail(String email);
-
 
 }

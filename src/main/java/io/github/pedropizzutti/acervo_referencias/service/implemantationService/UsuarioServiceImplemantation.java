@@ -22,11 +22,10 @@ public class UsuarioServiceImplemantation implements UsuarioService {
     private UsuarioRepository usuarioRepository;
     private PasswordEncoder passwordEncoder;
 
-    public UsuarioServiceImplemantation(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+    public UsuarioServiceImplemantation(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder){
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
     }
-
 
     @Transactional
     public UsuarioDTO salvar(UsuarioDTO usuarioDTO) throws RegraNegocioException {
@@ -45,12 +44,7 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
         } else {
 
-            Usuario usuario = new Usuario();
-            usuario.setLogin(usuarioDTO.getLogin());
-            usuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
-            usuario.setEmail(usuarioDTO.getEmail());
-            usuario.setNome(usuarioDTO.getNome());
-            usuario.setAdmin(usuarioDTO.isAdmin());
+            Usuario usuario = converterUsuarioDTOParaUsuario(usuarioDTO);
 
             Usuario usuarioSalvo = usuarioRepository.save(usuario);
 
@@ -62,6 +56,7 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
 
     @Override
+    @Transactional
     public void deletarUsuario(Integer id) throws RegraNegocioException {
 
         Usuario usuario = puxarUsuarioPeloId(id);
@@ -71,24 +66,29 @@ public class UsuarioServiceImplemantation implements UsuarioService {
     }
 
     @Override
+    @Transactional
     public UsuarioDTO atualizarUsuario(UsuarioDTO usuarioDTO, Integer id) throws RegraNegocioException {
 
-        Usuario usuario = puxarUsuarioPeloId(id);
+        if(usuarioRepository.existsById(id)){
 
-        usuario.setLogin(usuarioDTO.getLogin());
-        usuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
-        usuario.setNome(usuarioDTO.getNome());
-        usuario.setEmail(usuarioDTO.getEmail());
-        usuario.setAdmin(usuarioDTO.isAdmin());
+            Usuario usuario = converterUsuarioDTOParaUsuario(usuarioDTO);
 
-        Usuario usuarioAtualizado = usuarioRepository.save(usuario);
+            Usuario usuarioAtualizado = usuarioRepository.save(usuario);
 
-        UsuarioDTO usuarioDTOAtualizado = converterUsuarioParaUsuarioDTO(usuarioAtualizado);
+            UsuarioDTO usuarioDTOAtualizado = converterUsuarioParaUsuarioDTO(usuarioAtualizado);
 
-        return usuarioDTOAtualizado;
+            return usuarioDTOAtualizado;
+
+        } else {
+
+            throw new RegraNegocioException("Problema com a autentificação do usuário a ser atualizado.");
+
+        }
+
     }
 
     @Override
+    @Transactional
     public void atualizarEmailUsuario(String novoEmail, Integer id) throws RegraNegocioException {
 
             Usuario usuario = puxarUsuarioPeloId(id);
@@ -100,6 +100,7 @@ public class UsuarioServiceImplemantation implements UsuarioService {
     }
 
     @Override
+    @Transactional
     public void atualizarSenhaUsuario(String senhaAtual, String novaSenha, String confirmacaoNovaSenha, Integer id)
             throws RegraNegocioException {
 
@@ -165,22 +166,23 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
         } else {
 
-            Usuario usuario = new Usuario();
-            usuario.setLogin(login);
-            usuario.setNome(nome);
-            usuario.setEmail(email);
+            Usuario usuarioFiltro = new Usuario();
+            usuarioFiltro.setLogin(login);
+            usuarioFiltro.setNome(nome);
+            usuarioFiltro.setEmail(email);
 
-                ExampleMatcher matcher =
-                        ExampleMatcher
-                                .matching()
-                                .withIgnoreCase()
-                                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+            ExampleMatcher matcher =
+                    ExampleMatcher
+                            .matching()
+                            .withIgnorePaths("admin")
+                            .withIgnoreCase()
+                            .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
 
-            Example exampleFiltro = Example.of(usuario, matcher);
+            Example example = Example.of(usuarioFiltro, matcher);
 
             Pageable configuracaoPagina = PageRequest.of(numeroPaginacao, ELEMENTOS_POR_PAGINA, Sort.by("login"));
 
-            listaUsuarioBanco = usuarioRepository.findAll(exampleFiltro, configuracaoPagina).toList();
+            listaUsuarioBanco = usuarioRepository.findAll(example, configuracaoPagina).toList();
 
             listaUsuarioDTO =
                     listaUsuarioBanco.stream().map(user -> {
@@ -196,8 +198,7 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
     // Métodos Auxiliares
 
-    @Override
-    public Usuario puxarUsuarioPeloId(Integer id) throws RegraNegocioException {
+    private Usuario puxarUsuarioPeloId(Integer id) throws RegraNegocioException {
 
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuário não encontrado!"));
@@ -205,8 +206,7 @@ public class UsuarioServiceImplemantation implements UsuarioService {
         return usuario;
     }
 
-    @Override
-    public UsuarioDTO converterUsuarioParaUsuarioDTO(Usuario usuario){
+    private UsuarioDTO converterUsuarioParaUsuarioDTO(Usuario usuario){
 
         UsuarioDTO usuarioDTO = new UsuarioDTO();
         usuarioDTO.setId(usuario.getId());
@@ -219,8 +219,21 @@ public class UsuarioServiceImplemantation implements UsuarioService {
         return usuarioDTO;
     }
 
-    @Override
-    public boolean verificarDisponibilidadeDoLogin(String login){
+    private Usuario converterUsuarioDTOParaUsuario(UsuarioDTO usuarioDTO){
+
+        Usuario usuario = new Usuario();
+
+        usuario.setLogin(usuarioDTO.getLogin());
+        usuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
+        usuario.setNome(usuarioDTO.getNome());
+        usuario.setEmail(usuarioDTO.getEmail());
+        usuario.setAdmin(usuarioDTO.isAdmin());
+
+        return usuario;
+
+    }
+
+    private boolean verificarDisponibilidadeDoLogin(String login){
 
         boolean loginDisponivel = usuarioRepository.existsByLogin(login);
 
@@ -228,14 +241,12 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
     }
 
-    @Override
-    public boolean verificarDisponibilidadeDoEmail(String email){
+    private boolean verificarDisponibilidadeDoEmail(String email){
 
         boolean emailDisponivel = usuarioRepository.existsByEmail(email);
 
         return emailDisponivel;
 
     }
-
 
 }
