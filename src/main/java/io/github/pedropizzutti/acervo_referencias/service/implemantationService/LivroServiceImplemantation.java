@@ -35,11 +35,39 @@ public class LivroServiceImplemantation implements LivroService {
 
     }
 
+    @Override
+    @Transactional
+    public LivroDTO atualizarLivro(LivroDTO livroDTO) throws RegraNegocioException{
+
+        Livro livroParaAtualizacao = puxarLivroPeloId(livroDTO.getIdRegistro());
+
+        livroParaAtualizacao.setAutor(livroDTO.getAutor());
+        livroParaAtualizacao.setTitulo(livroDTO.getTitulo());
+        livroParaAtualizacao.setAno(livroDTO.getAno());
+        livroParaAtualizacao.setReferencia(livroDTO.getReferencia());
+        livroParaAtualizacao.setAnotacao(livroDTO.getAnotacao());
+
+        Livro livroAtualizado = livroRepository.save(livroParaAtualizacao);
+
+        LivroDTO livroAtualizadoDTO = converterLivroParaLivroDTO(livroAtualizado);
+
+        return livroAtualizadoDTO;
+    }
+
 
 
     // Métodos Auxiliares
 
-    private Livro converterLivroDTOParaLivro(LivroDTO livroDTO) throws RegraNegocioException {
+    private Livro puxarLivroPeloId(Integer idRegistroLivro) throws RegraNegocioException {
+
+        Livro livro = livroRepository.findById(idRegistroLivro)
+                .orElseThrow(() -> new RegraNegocioException("Livro não encontrado no banco de dados."));
+
+        return livro;
+
+    }
+
+    public Livro converterLivroDTOParaLivro(LivroDTO livroDTO) throws RegraNegocioException {
 
         Integer idUsuario = livroDTO.getIdUsuario();
 

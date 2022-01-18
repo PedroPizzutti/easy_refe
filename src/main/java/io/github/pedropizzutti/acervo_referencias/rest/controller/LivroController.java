@@ -28,5 +28,14 @@ public class LivroController {
 
     }
 
+    @PutMapping("/attBook")
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody LivroDTO atualizarLivro(@RequestBody @Valid LivroDTO livroDTO) throws RegraNegocioException {
 
+        LivroDTO livroAtualizadoDTO = livroService.atualizarLivro(livroDTO);
+
+        return livroAtualizadoDTO;
+
+    }
+    
 }
