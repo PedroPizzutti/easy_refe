@@ -1,11 +1,17 @@
 package io.github.pedropizzutti.acervo_referencias.domain.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table (name = "tb_referencias_bibliograficas")
 public class Livro {

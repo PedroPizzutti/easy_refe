@@ -177,10 +177,11 @@ public class UsuarioServiceImplemantation implements UsuarioService {
                             .withIgnoreCase()
                             .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
 
-            Usuario usuario = new Usuario();
-            usuario.setLogin(login);
-            usuario.setNome(nome);
-            usuario.setEmail(email);
+            Usuario usuario = Usuario.builder()
+                    .login(login)
+                    .nome(nome)
+                    .email(email)
+                    .build();
 
             Example filtroExample = Example.of(usuario, configMatcher);
 
@@ -210,25 +211,27 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
     private UsuarioDTO converterUsuarioParaUsuarioDTO(Usuario usuario){
 
-        UsuarioDTO usuarioDTO = new UsuarioDTO();
-        usuarioDTO.setId(usuario.getId());
-        usuarioDTO.setLogin(usuario.getLogin());
-        usuarioDTO.setSenha(usuario.getSenha());
-        usuarioDTO.setNome(usuario.getNome());
-        usuarioDTO.setEmail(usuario.getEmail());
-        usuarioDTO.setAdmin(usuario.isAdmin());
+        UsuarioDTO usuarioDTO = UsuarioDTO.builder()
+                .id(usuario.getId())
+                .login(usuario.getLogin())
+                .senha(usuario.getSenha())
+                .nome(usuario.getNome())
+                .email(usuario.getEmail())
+                .admin(usuario.isAdmin())
+                .build();
 
         return usuarioDTO;
     }
 
     private Usuario converterUsuarioDTOParaUsuario(UsuarioDTO usuarioDTO){
 
-        Usuario usuario = new Usuario();
-        usuario.setLogin(usuarioDTO.getLogin());
-        usuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
-        usuario.setNome(usuarioDTO.getNome());
-        usuario.setEmail(usuarioDTO.getEmail());
-        usuario.setAdmin(usuarioDTO.isAdmin());
+        Usuario usuario = Usuario.builder()
+                .login(usuarioDTO.getLogin())
+                .senha(passwordEncoder.encode(usuarioDTO.getSenha()))
+                .nome(usuarioDTO.getNome())
+                .email(usuarioDTO.getEmail())
+                .admin(usuarioDTO.isAdmin())
+                .build();
 
         return usuario;
 

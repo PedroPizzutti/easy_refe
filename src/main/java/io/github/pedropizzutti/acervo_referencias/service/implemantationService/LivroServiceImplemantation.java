@@ -35,6 +35,8 @@ public class LivroServiceImplemantation implements LivroService {
 
     }
 
+
+
     // Métodos Auxiliares
 
     private Livro converterLivroDTOParaLivro(LivroDTO livroDTO) throws RegraNegocioException {
@@ -44,13 +46,14 @@ public class LivroServiceImplemantation implements LivroService {
         Usuario usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new RegraNegocioException("Código de usuário inválido."));
 
-        Livro livro = new Livro();
-        livro.setUsuario(usuario);
-        livro.setAutor(livroDTO.getAutor());
-        livro.setTitulo(livroDTO.getTitulo());
-        livro.setAno(livroDTO.getAno());
-        livro.setReferencia(livroDTO.getReferencia());
-        livro.setAnotacao(livroDTO.getAnotacao());
+        Livro livro = Livro.builder()
+                .usuario(usuario)
+                .autor(livroDTO.getAutor())
+                .titulo(livroDTO.getTitulo())
+                .ano(livroDTO.getAno())
+                .referencia(livroDTO.getReferencia())
+                .anotacao(livroDTO.getAnotacao())
+                .build();
 
         return livro;
 
@@ -58,14 +61,15 @@ public class LivroServiceImplemantation implements LivroService {
 
     private LivroDTO converterLivroParaLivroDTO(Livro livro){
 
-        LivroDTO livroDTO = new LivroDTO();
-        livroDTO.setIdRegistro(livro.getId());
-        livroDTO.setIdUsuario(livro.getUsuario().getId());
-        livroDTO.setAutor(livro.getAutor());
-        livroDTO.setTitulo(livro.getTitulo());
-        livroDTO.setAno(livro.getAno());
-        livroDTO.setReferencia(livro.getReferencia());
-        livroDTO.setAnotacao(livro.getAnotacao());
+        LivroDTO livroDTO = LivroDTO.builder()
+                    .idRegistro(livro.getId())
+                    .idUsuario(livro.getUsuario().getId())
+                    .autor(livro.getAutor())
+                    .titulo(livro.getTitulo())
+                    .ano(livro.getAno())
+                    .referencia(livro.getReferencia())
+                    .anotacao(livro.getAnotacao())
+                    .build();
 
         return livroDTO;
     }

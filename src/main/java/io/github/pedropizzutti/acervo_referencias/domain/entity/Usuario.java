@@ -1,6 +1,9 @@
 package io.github.pedropizzutti.acervo_referencias.domain.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
@@ -8,6 +11,9 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "tb_usuario")
 public class Usuario {
