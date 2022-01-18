@@ -37,5 +37,14 @@ public class LivroController {
         return livroAtualizadoDTO;
 
     }
-    
+
+    @DeleteMapping("/delBook/{idRegistroLivro}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletarLivro(@PathVariable Integer idRegistroLivro) throws RegraNegocioException {
+
+        livroService.deletarLivro(idRegistroLivro);
+
+    }
+
+
 }

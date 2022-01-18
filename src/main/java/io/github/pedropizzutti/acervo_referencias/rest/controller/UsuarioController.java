@@ -33,7 +33,7 @@ public class UsuarioController {
 
         }
 
-    @GetMapping("/admin/page{pagina}")
+    @GetMapping("/admin/page/{pagina}")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody List<UsuarioDTO> listarUsuarios(@PathVariable Integer pagina){
 
@@ -43,7 +43,7 @@ public class UsuarioController {
 
     }
 
-    @GetMapping("/admin/filterPage{paginaFiltro}")
+    @GetMapping("/admin/filterPage/{paginaFiltro}")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody List<UsuarioDTO> pesquisarUsuarios(
             @RequestBody UsuarioDTO usuarioDTOFiltro, @PathVariable Integer paginaFiltro) throws RegraNegocioException {
@@ -73,7 +73,7 @@ public class UsuarioController {
 
     }
 
-    @PatchMapping("/att/userEmail{id}")
+    @PatchMapping("/att/userEmail/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void atualizarEmailUsuario(@RequestBody @Valid EmailDTO emailDTO, @PathVariable Integer id) throws RegraNegocioException {
 
@@ -83,7 +83,7 @@ public class UsuarioController {
 
     }
 
-    @PatchMapping("/att/userPass{id}")
+    @PatchMapping("/att/userPass/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void atualizarSenhaUsuario(@RequestBody @Valid SenhaDTO senhaDTO, @PathVariable Integer id) throws RegraNegocioException{
 

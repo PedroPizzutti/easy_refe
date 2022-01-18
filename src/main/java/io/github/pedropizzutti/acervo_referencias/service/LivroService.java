@@ -10,4 +10,7 @@ public interface LivroService {
     LivroDTO salvarLivro(LivroDTO livroDTO) throws RegraNegocioException;
 
     LivroDTO atualizarLivro(LivroDTO livroDTO) throws RegraNegocioException;
+
+    @Transactional
+    void deletarLivro(Integer idRegistroLivro) throws RegraNegocioException;
 }

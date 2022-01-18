@@ -37,7 +37,7 @@ public class LivroServiceImplemantation implements LivroService {
 
     @Override
     @Transactional
-    public LivroDTO atualizarLivro(LivroDTO livroDTO) throws RegraNegocioException{
+    public LivroDTO atualizarLivro(LivroDTO livroDTO) throws RegraNegocioException {
 
         Livro livroParaAtualizacao = puxarLivroPeloId(livroDTO.getIdRegistro());
 
@@ -52,6 +52,16 @@ public class LivroServiceImplemantation implements LivroService {
         LivroDTO livroAtualizadoDTO = converterLivroParaLivroDTO(livroAtualizado);
 
         return livroAtualizadoDTO;
+    }
+
+    @Override
+    @Transactional
+    public void deletarLivro(Integer idRegistroLivro) throws RegraNegocioException {
+
+        Livro livroParaDeletacao = puxarLivroPeloId(idRegistroLivro);
+
+        livroRepository.delete(livroParaDeletacao);
+
     }
 
 
