@@ -27,18 +27,19 @@ public class UsuarioServiceImplemantation implements UsuarioService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Override
     @Transactional
     public UsuarioDTO salvar(UsuarioDTO usuarioDTO) throws RegraNegocioException {
 
-        boolean loginNaoDisponivel = verificarDisponibilidadeDoLogin(usuarioDTO.getLogin());
+        boolean loginIndisponivel = verificarDisponibilidadeDoLogin(usuarioDTO.getLogin());
 
-        boolean emailNaoDisponivel = verificarDisponibilidadeDoEmail(usuarioDTO.getEmail());
+        boolean emailIndisponivel = verificarDisponibilidadeDoEmail(usuarioDTO.getEmail());
 
-        if(loginNaoDisponivel) {
+        if(loginIndisponivel) {
 
             throw new RegraNegocioException("Login não disponível!");
 
-        } else if(emailNaoDisponivel){
+        } else if(emailIndisponivel){
 
             throw new RegraNegocioException("Já há uma conta para este email!");
 
@@ -133,11 +134,12 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
     @Override
     public List<UsuarioDTO> listarUsuarios(Integer paginaAtual){
+
         List<Usuario> listaUsuariosBanco = new ArrayList<>();
         List<UsuarioDTO> listaUsuariosDTO = new ArrayList<>();
-        Pageable pageable = PageRequest.of(paginaAtual,ELEMENTOS_POR_PAGINA, Sort.by("id"));
+        Pageable configPaginacao = PageRequest.of(paginaAtual,ELEMENTOS_POR_PAGINA, Sort.by("id"));
 
-        listaUsuariosBanco = usuarioRepository.findAll(pageable).toList();
+        listaUsuariosBanco = usuarioRepository.findAll(configPaginacao).toList();
         listaUsuariosDTO =
             listaUsuariosBanco.stream().map(usuario -> {
             UsuarioDTO usuarioDTO = converterUsuarioParaUsuarioDTO(usuario);
@@ -166,23 +168,23 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
         } else {
 
-            Usuario usuarioFiltro = new Usuario();
-            usuarioFiltro.setLogin(login);
-            usuarioFiltro.setNome(nome);
-            usuarioFiltro.setEmail(email);
+            Pageable configuracaoPagina = PageRequest.of(numeroPaginacao, ELEMENTOS_POR_PAGINA, Sort.by("login"));
 
-            ExampleMatcher matcher =
+            ExampleMatcher configMatcher =
                     ExampleMatcher
                             .matching()
                             .withIgnorePaths("admin")
                             .withIgnoreCase()
                             .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
 
-            Example example = Example.of(usuarioFiltro, matcher);
+            Usuario usuario = new Usuario();
+            usuario.setLogin(login);
+            usuario.setNome(nome);
+            usuario.setEmail(email);
 
-            Pageable configuracaoPagina = PageRequest.of(numeroPaginacao, ELEMENTOS_POR_PAGINA, Sort.by("login"));
+            Example filtroExample = Example.of(usuario, configMatcher);
 
-            listaUsuarioBanco = usuarioRepository.findAll(example, configuracaoPagina).toList();
+            listaUsuarioBanco = usuarioRepository.findAll(filtroExample, configuracaoPagina).toList();
 
             listaUsuarioDTO =
                     listaUsuarioBanco.stream().map(user -> {
@@ -222,7 +224,6 @@ public class UsuarioServiceImplemantation implements UsuarioService {
     private Usuario converterUsuarioDTOParaUsuario(UsuarioDTO usuarioDTO){
 
         Usuario usuario = new Usuario();
-
         usuario.setLogin(usuarioDTO.getLogin());
         usuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
         usuario.setNome(usuarioDTO.getNome());
@@ -235,17 +236,17 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
     private boolean verificarDisponibilidadeDoLogin(String login){
 
-        boolean loginDisponivel = usuarioRepository.existsByLogin(login);
+        boolean loginIndisponivel = usuarioRepository.existsByLogin(login);
 
-        return loginDisponivel;
+        return loginIndisponivel;
 
     }
 
     private boolean verificarDisponibilidadeDoEmail(String email){
 
-        boolean emailDisponivel = usuarioRepository.existsByEmail(email);
+        boolean emailIndisponivel = usuarioRepository.existsByEmail(email);
 
-        return emailDisponivel;
+        return emailIndisponivel;
 
     }
 
