@@ -135,7 +135,7 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
         List<Usuario> listaUsuariosBanco = new ArrayList<>();
         List<UsuarioDTO> listaUsuariosDTO = new ArrayList<>();
-        Pageable configPaginacao = PageRequest.of(paginaAtual,ELEMENTOS_POR_PAGINA, Sort.by("id"));
+        Pageable configPaginacao = PageRequest.of(paginaAtual-1,ELEMENTOS_POR_PAGINA, Sort.by("id"));
 
         listaUsuariosBanco = usuarioRepository.findAll(configPaginacao).toList();
         listaUsuariosDTO =
@@ -154,7 +154,7 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
         if(dadosInformados){
 
-            Pageable configPaginacao = PageRequest.of(paginaAtual, ELEMENTOS_POR_PAGINA, Sort.by("login"));
+            Pageable configPaginacao = PageRequest.of(paginaAtual-1, ELEMENTOS_POR_PAGINA, Sort.by("login"));
             Example configExemplar = configurarExemplar(usuarioDTOFiltrado);
 
             List<Usuario> UsuariosBanco = usuarioRepository.findAll(configExemplar, configPaginacao).toList();
@@ -180,6 +180,15 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new UsuarioNaoEncontradoException("Problemas com o código do usuário"));
+
+        return usuario;
+    }
+
+    @Override
+    public Usuario puxarUsuarioPeloILogin(String login) throws RegraNegocioException {
+
+        Usuario usuario = usuarioRepository.findByLogin(login)
+                .orElseThrow(() -> new UsuarioNaoEncontradoException("Problemas com a autentificação do usuário."));
 
         return usuario;
     }

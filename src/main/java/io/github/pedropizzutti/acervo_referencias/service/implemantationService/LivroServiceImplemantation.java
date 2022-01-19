@@ -70,8 +70,6 @@ public class LivroServiceImplemantation implements LivroService {
 
         }
 
-
-
     }
 
     @Override
@@ -81,6 +79,25 @@ public class LivroServiceImplemantation implements LivroService {
         Livro livroParaDeletacao = puxarLivroPeloId(idRegistroLivro);
 
         livroRepository.delete(livroParaDeletacao);
+
+    }
+
+    @Override
+    public List<LivroDTO> listarLivrosUsuario(String loginUsuario, Integer paginaAtual) throws RegraNegocioException {
+
+        Usuario usuario = usuarioService.puxarUsuarioPeloILogin(loginUsuario);
+
+        Pageable configPaginacao = PageRequest.of(paginaAtual-1, ELEMENTOS_POR_PAGINA, Sort.by("autor"));
+
+        List<Livro> livrosUsuario = livroRepository.findByUsuario(usuario);
+
+        List<LivroDTO> livrosDTOUsuario = livrosUsuario.stream()
+                .map(livro -> {
+                    LivroDTO livroDTO = converterLivroParaLivroDTO(livro);
+                    return livroDTO;
+                }).collect(Collectors.toList());
+
+        return livrosDTOUsuario;
 
     }
 

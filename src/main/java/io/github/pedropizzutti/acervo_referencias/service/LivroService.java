@@ -13,8 +13,9 @@ public interface LivroService {
 
     LivroDTO atualizarLivro(LivroDTO livroDTO) throws RegraNegocioException;
 
-    @Transactional
     void deletarLivro(Integer idRegistroLivro) throws RegraNegocioException;
+
+    List<LivroDTO> listarLivrosUsuario(String loginUsuario, Integer paginaAtual) throws RegraNegocioException;
 
     List<LivroDTO> listarLivrosFiltro(LivroDTO livroDTOFiltrado, Integer paginaAtual) throws RegraNegocioException;
 }

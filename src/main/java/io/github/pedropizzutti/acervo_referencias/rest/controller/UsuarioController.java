@@ -37,7 +37,7 @@ public class UsuarioController {
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody List<UsuarioDTO> listarUsuarios(@PathVariable Integer pagina){
 
-        List<UsuarioDTO> listaUsuarios = usuarioService.listarUsuarios(pagina-1);
+        List<UsuarioDTO> listaUsuarios = usuarioService.listarUsuarios(pagina);
 
         return listaUsuarios;
 
@@ -49,7 +49,7 @@ public class UsuarioController {
             @RequestBody UsuarioDTO usuarioDTOFiltro, @PathVariable Integer paginaFiltro) throws RegraNegocioException {
 
         List<UsuarioDTO> listaFiltradaUsuarios =
-                usuarioService.listarUsuariosFiltro(usuarioDTOFiltro, paginaFiltro-1);
+                usuarioService.listarUsuariosFiltro(usuarioDTOFiltro, paginaFiltro);
 
         return listaFiltradaUsuarios;
 

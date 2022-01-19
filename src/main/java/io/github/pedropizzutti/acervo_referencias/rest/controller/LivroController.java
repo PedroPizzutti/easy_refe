@@ -10,7 +10,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/livro")
+@RequestMapping("/api/livros")
 public class LivroController {
 
     private LivroService livroService;
@@ -44,6 +44,17 @@ public class LivroController {
     public void deletarLivro(@PathVariable Integer idRegistroLivro) throws RegraNegocioException {
 
         livroService.deletarLivro(idRegistroLivro);
+
+    }
+
+    @GetMapping("/{loginUsuario}/{paginaAtual}")
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody List<LivroDTO> buscarLivrosUsuario
+            (@PathVariable String loginUsuario, @PathVariable Integer paginaAtual) throws RegraNegocioException {
+
+        List<LivroDTO> livroDTOS = livroService.listarLivrosUsuario(loginUsuario, paginaAtual);
+
+        return  livroDTOS;
 
     }
 
