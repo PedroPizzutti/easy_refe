@@ -55,7 +55,7 @@ public class UsuarioController {
 
     }
 
-    @DeleteMapping("/admin/{id}")
+    @DeleteMapping("/admin/delUser/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletarUsuario(@PathVariable Integer id) throws RegraNegocioException {
 
@@ -63,11 +63,11 @@ public class UsuarioController {
 
     }
 
-    @PutMapping("/admin/{id}")
+    @PutMapping("/admin/attUser")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody UsuarioDTO atualizarUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO, @PathVariable Integer id) throws RegraNegocioException {
+    public @ResponseBody UsuarioDTO atualizarUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO) throws RegraNegocioException {
 
-        UsuarioDTO usuarioAtualizadoDTO = usuarioService.atualizarUsuario(usuarioDTO, id);
+        UsuarioDTO usuarioAtualizadoDTO = usuarioService.atualizarUsuario(usuarioDTO);
 
         return usuarioAtualizadoDTO;
 

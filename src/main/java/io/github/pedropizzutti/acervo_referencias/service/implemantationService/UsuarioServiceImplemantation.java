@@ -68,23 +68,21 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
     @Override
     @Transactional
-    public UsuarioDTO atualizarUsuario(UsuarioDTO usuarioDTO, Integer id) throws RegraNegocioException {
+    public UsuarioDTO atualizarUsuario(UsuarioDTO usuarioDTO) throws RegraNegocioException {
 
-        if(usuarioRepository.existsById(id)){
+            Usuario usuario = puxarUsuarioPeloId(usuarioDTO.getId());
 
-            Usuario usuario = converterUsuarioDTOParaUsuario(usuarioDTO);
+            usuario.setLogin(usuarioDTO.getLogin());
+            usuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
+            usuario.setNome(usuarioDTO.getNome());
+            usuario.setEmail(usuarioDTO.getEmail());
+            usuario.setAdmin(usuarioDTO.isAdmin());
 
             Usuario usuarioAtualizado = usuarioRepository.save(usuario);
 
             UsuarioDTO usuarioDTOAtualizado = converterUsuarioParaUsuarioDTO(usuarioAtualizado);
 
             return usuarioDTOAtualizado;
-
-        } else {
-
-            throw new RegraNegocioException("Problema com a autentificação do usuário a ser atualizado.");
-
-        }
 
     }
 
@@ -152,48 +150,26 @@ public class UsuarioServiceImplemantation implements UsuarioService {
     @Override
     public List<UsuarioDTO> listarUsuariosFiltro(UsuarioDTO usuarioDTOFiltrado, Integer paginaAtual) throws RegraNegocioException {
 
-        String login = usuarioDTOFiltrado.getLogin();
-        String nome = usuarioDTOFiltrado.getNome();
-        String email = usuarioDTOFiltrado.getEmail();
+        boolean dadosInformados = verificarDadosUsuarioDTOFiltrado(usuarioDTOFiltrado);
 
-        if((login.equals("") || login == null) &&
-                (nome.equals("") || nome == null) &&
-                (email.equals("") || email == null)
-        ){
-
-            throw new RegraNegocioException("Nenhum dado informado para consulta...");
-
-        } else {
-
-            List<Usuario> UsuariosBanco = new ArrayList<>();
-            List<UsuarioDTO> UsuariosDTO = new ArrayList<>();
+        if(dadosInformados){
 
             Pageable configPaginacao = PageRequest.of(paginaAtual, ELEMENTOS_POR_PAGINA, Sort.by("login"));
+            Example configExemplar = configurarExemplar(usuarioDTOFiltrado);
 
-            ExampleMatcher configMatcher =
-                    ExampleMatcher
-                            .matching()
-                            .withIgnorePaths("admin")
-                            .withIgnoreCase()
-                            .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+            List<Usuario> UsuariosBanco = usuarioRepository.findAll(configExemplar, configPaginacao).toList();
 
-            Usuario usuario = Usuario.builder()
-                    .login(login)
-                    .nome(nome)
-                    .email(email)
-                    .build();
-
-            Example filtroExample = Example.of(usuario, configMatcher);
-
-            UsuariosBanco = usuarioRepository.findAll(filtroExample, configPaginacao).toList();
-
-            UsuariosDTO =
+            List<UsuarioDTO> UsuariosDTO =
                     UsuariosBanco.stream().map(user -> {
                         UsuarioDTO usuarioDTO = converterUsuarioParaUsuarioDTO(user);
                         return usuarioDTO;
                     }).collect(Collectors.toList());
 
             return UsuariosDTO;
+
+        } else {
+
+            throw new RegraNegocioException("Nenhum dado informado para consulta...");
 
         }
 
@@ -210,6 +186,50 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
     // Métodos Auxiliares
 
+    private Example configurarExemplar(UsuarioDTO usuarioDTOFiltrado){
+
+        ExampleMatcher configMatcher =
+                ExampleMatcher
+                        .matching()
+                        .withIgnorePaths("admin")
+                        .withIgnoreCase()
+                        .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+
+        Usuario usuario = Usuario.builder()
+                .login(usuarioDTOFiltrado.getLogin())
+                .nome(usuarioDTOFiltrado.getNome())
+                .email(usuarioDTOFiltrado.getEmail())
+                .build();
+
+        Example exemplar = Example.of(usuario, configMatcher);
+
+        return exemplar;
+    }
+
+    private boolean verificarDadosUsuarioDTOFiltrado(UsuarioDTO usuarioDTOFiltrado){
+
+        boolean dadosInformados;
+
+        String login = usuarioDTOFiltrado.getLogin();
+        String nome = usuarioDTOFiltrado.getNome();
+        String email = usuarioDTOFiltrado.getEmail();
+
+        if((login.equals("") || login == null) &&
+                (nome.equals("") || nome == null) &&
+                (email.equals("") || email == null))
+        {
+
+            dadosInformados = false;
+
+        } else {
+
+            dadosInformados = true;
+
+        }
+
+        return dadosInformados;
+
+    }
 
 
     private UsuarioDTO converterUsuarioParaUsuarioDTO(Usuario usuario){

@@ -47,18 +47,31 @@ public class LivroServiceImplemantation implements LivroService {
     public LivroDTO atualizarLivro(LivroDTO livroDTO) throws RegraNegocioException {
 
         Livro livroParaAtualizacao = puxarLivroPeloId(livroDTO.getIdRegistro());
+        Usuario usuarioLivro = usuarioService.puxarUsuarioPeloId(livroDTO.getIdUsuario());
 
-        livroParaAtualizacao.setAutor(livroDTO.getAutor());
-        livroParaAtualizacao.setTitulo(livroDTO.getTitulo());
-        livroParaAtualizacao.setAno(livroDTO.getAno());
-        livroParaAtualizacao.setReferencia(livroDTO.getReferencia());
-        livroParaAtualizacao.setAnotacao(livroDTO.getAnotacao());
+        if(livroParaAtualizacao.getUsuario().getId() == usuarioLivro.getId()){
 
-        Livro livroAtualizado = livroRepository.save(livroParaAtualizacao);
+            livroParaAtualizacao.setUsuario(usuarioLivro);
+            livroParaAtualizacao.setAutor(livroDTO.getAutor());
+            livroParaAtualizacao.setTitulo(livroDTO.getTitulo());
+            livroParaAtualizacao.setAno(livroDTO.getAno());
+            livroParaAtualizacao.setReferencia(livroDTO.getReferencia());
+            livroParaAtualizacao.setAnotacao(livroDTO.getAnotacao());
 
-        LivroDTO livroAtualizadoDTO = converterLivroParaLivroDTO(livroAtualizado);
+            Livro livroAtualizado = livroRepository.save(livroParaAtualizacao);
 
-        return livroAtualizadoDTO;
+            LivroDTO livroAtualizadoDTO = converterLivroParaLivroDTO(livroAtualizado);
+
+            return livroAtualizadoDTO;
+
+        } else {
+
+            throw new RegraNegocioException("Problemas com autentificação da relação usuário-livro");
+
+        }
+
+
+
     }
 
     @Override
@@ -126,9 +139,9 @@ public class LivroServiceImplemantation implements LivroService {
                 .ano(livroDTOFiltrado.getAno())
                 .build();
 
-        Example configExample = Example.of(livro, configMatcher);
+        Example exemplar = Example.of(livro, configMatcher);
 
-        return configExample;
+        return exemplar;
 
     }
 
