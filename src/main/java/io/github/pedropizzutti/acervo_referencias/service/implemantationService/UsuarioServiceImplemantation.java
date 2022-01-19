@@ -150,14 +150,11 @@ public class UsuarioServiceImplemantation implements UsuarioService {
     }
 
     @Override
-    public List<UsuarioDTO> listarUsuariosFiltro(UsuarioDTO usuarioDTOFiltro, Integer numeroPaginacao) throws RegraNegocioException {
+    public List<UsuarioDTO> listarUsuariosFiltro(UsuarioDTO usuarioDTOFiltrado, Integer paginaAtual) throws RegraNegocioException {
 
-        List<Usuario> listaUsuarioBanco = new ArrayList<>();
-        List<UsuarioDTO> listaUsuarioDTO = new ArrayList<>();
-
-        String login = usuarioDTOFiltro.getLogin();
-        String nome = usuarioDTOFiltro.getNome();
-        String email = usuarioDTOFiltro.getEmail();
+        String login = usuarioDTOFiltrado.getLogin();
+        String nome = usuarioDTOFiltrado.getNome();
+        String email = usuarioDTOFiltrado.getEmail();
 
         if((login.equals("") || login == null) &&
                 (nome.equals("") || nome == null) &&
@@ -168,7 +165,10 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
         } else {
 
-            Pageable configuracaoPagina = PageRequest.of(numeroPaginacao, ELEMENTOS_POR_PAGINA, Sort.by("login"));
+            List<Usuario> UsuariosBanco = new ArrayList<>();
+            List<UsuarioDTO> UsuariosDTO = new ArrayList<>();
+
+            Pageable configPaginacao = PageRequest.of(paginaAtual, ELEMENTOS_POR_PAGINA, Sort.by("login"));
 
             ExampleMatcher configMatcher =
                     ExampleMatcher
@@ -185,29 +185,32 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
             Example filtroExample = Example.of(usuario, configMatcher);
 
-            listaUsuarioBanco = usuarioRepository.findAll(filtroExample, configuracaoPagina).toList();
+            UsuariosBanco = usuarioRepository.findAll(filtroExample, configPaginacao).toList();
 
-            listaUsuarioDTO =
-                    listaUsuarioBanco.stream().map(user -> {
+            UsuariosDTO =
+                    UsuariosBanco.stream().map(user -> {
                         UsuarioDTO usuarioDTO = converterUsuarioParaUsuarioDTO(user);
                         return usuarioDTO;
                     }).collect(Collectors.toList());
 
-            return listaUsuarioDTO;
+            return UsuariosDTO;
 
         }
 
     }
 
-    // Métodos Auxiliares
-
-    private Usuario puxarUsuarioPeloId(Integer id) throws RegraNegocioException {
+    @Override
+    public Usuario puxarUsuarioPeloId(Integer id) throws RegraNegocioException {
 
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuário não encontrado!"));
+                .orElseThrow(() -> new UsuarioNaoEncontradoException("Problemas com o código do usuário"));
 
         return usuario;
     }
+
+    // Métodos Auxiliares
+
+
 
     private UsuarioDTO converterUsuarioParaUsuarioDTO(Usuario usuario){
 

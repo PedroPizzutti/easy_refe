@@ -5,6 +5,8 @@ import io.github.pedropizzutti.acervo_referencias.exception.RegraNegocioExceptio
 import io.github.pedropizzutti.acervo_referencias.rest.dto.LivroDTO;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface LivroService {
 
     LivroDTO salvarLivro(LivroDTO livroDTO) throws RegraNegocioException;
@@ -13,4 +15,6 @@ public interface LivroService {
 
     @Transactional
     void deletarLivro(Integer idRegistroLivro) throws RegraNegocioException;
+
+    List<LivroDTO> listarLivrosFiltro(LivroDTO livroDTOFiltrado, Integer paginaAtual) throws RegraNegocioException;
 }

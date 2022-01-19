@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/livro")
@@ -43,6 +44,17 @@ public class LivroController {
     public void deletarLivro(@PathVariable Integer idRegistroLivro) throws RegraNegocioException {
 
         livroService.deletarLivro(idRegistroLivro);
+
+    }
+
+    @GetMapping("/findBook/{paginaAtual}")
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody List<LivroDTO> pesquisarLivrosFiltro
+            (@RequestBody LivroDTO livroDTOFiltrado, @PathVariable Integer paginaAtual) throws RegraNegocioException {
+
+        List<LivroDTO> livrosDTO = livroService.listarLivrosFiltro(livroDTOFiltrado, paginaAtual);
+
+        return livrosDTO;
 
     }
 

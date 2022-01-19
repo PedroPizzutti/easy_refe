@@ -24,4 +24,5 @@ public interface UsuarioService {
 
     List<UsuarioDTO> listarUsuariosFiltro(UsuarioDTO usuarioDTOFiltro, Integer numeroPaginacao) throws RegraNegocioException;
 
+    Usuario puxarUsuarioPeloId(Integer id) throws RegraNegocioException;
 }

@@ -7,18 +7,25 @@ import io.github.pedropizzutti.acervo_referencias.domain.repository.UsuarioRepos
 import io.github.pedropizzutti.acervo_referencias.exception.RegraNegocioException;
 import io.github.pedropizzutti.acervo_referencias.rest.dto.LivroDTO;
 import io.github.pedropizzutti.acervo_referencias.service.LivroService;
+import io.github.pedropizzutti.acervo_referencias.service.UsuarioService;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LivroServiceImplemantation implements LivroService {
 
+    private final Integer ELEMENTOS_POR_PAGINA = 10;
     private LivroRepository livroRepository;
-    private UsuarioRepository usuarioRepository;
+    private UsuarioService usuarioService;
 
-    public LivroServiceImplemantation(LivroRepository livroRepository, UsuarioRepository usuarioRepository){
+    public LivroServiceImplemantation(LivroRepository livroRepository, UsuarioService usuarioService){
         this.livroRepository = livroRepository;
-        this.usuarioRepository = usuarioRepository;
+        this.usuarioService = usuarioService;
     }
 
     @Override
@@ -64,7 +71,32 @@ public class LivroServiceImplemantation implements LivroService {
 
     }
 
+    @Override
+    public List<LivroDTO> listarLivrosFiltro(LivroDTO livroDTOFiltrado, Integer paginaAtual) throws RegraNegocioException {
 
+        boolean dadosInformados = verificarDadosLivroDTOFiltrado(livroDTOFiltrado);
+
+        if(dadosInformados){
+
+            Pageable configPaginacao = PageRequest.of(paginaAtual-1, ELEMENTOS_POR_PAGINA, Sort.by("autor"));
+            Example configExemplar = configurarExemplar(livroDTOFiltrado);
+
+            List<Livro> livrosBanco = livroRepository.findAll(configExemplar, configPaginacao).toList();
+
+            List<LivroDTO> livrosDTO = livrosBanco.stream()
+                   .map(livro -> {
+                       LivroDTO livroDTO = converterLivroParaLivroDTO(livro);
+                       return livroDTO;
+                   }).collect(Collectors.toList());
+
+            return livrosDTO;
+
+        } else {
+
+            throw new RegraNegocioException("Nenhum dado informado para consulta...");
+
+        }
+    }
 
     // Métodos Auxiliares
 
@@ -77,12 +109,59 @@ public class LivroServiceImplemantation implements LivroService {
 
     }
 
+    private Example configurarExemplar(LivroDTO livroDTOFiltrado) throws RegraNegocioException {
+
+        ExampleMatcher configMatcher =
+                ExampleMatcher
+                        .matching()
+                        .withIgnoreCase()
+                        .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+
+        Usuario usuario = usuarioService.puxarUsuarioPeloId(livroDTOFiltrado.getIdUsuario());
+
+        Livro livro = Livro.builder()
+                .usuario(usuario)
+                .titulo(livroDTOFiltrado.getTitulo())
+                .autor(livroDTOFiltrado.getAutor())
+                .ano(livroDTOFiltrado.getAno())
+                .build();
+
+        Example configExample = Example.of(livro, configMatcher);
+
+        return configExample;
+
+    }
+
+    private boolean verificarDadosLivroDTOFiltrado(LivroDTO livroDTOFiltrado){
+
+        boolean dadosInformados;
+
+        String titulo = livroDTOFiltrado.getTitulo();
+        String autor = livroDTOFiltrado.getAutor();
+        Integer ano = livroDTOFiltrado.getAno();
+
+        if((titulo == null || titulo.equals(""))
+                && (autor == null || autor.equals(""))
+                && (ano == null || ano == 0))
+        {
+
+            dadosInformados = false;
+
+        } else {
+
+            dadosInformados = true;
+
+        }
+
+        return dadosInformados;
+
+    }
+
     public Livro converterLivroDTOParaLivro(LivroDTO livroDTO) throws RegraNegocioException {
 
         Integer idUsuario = livroDTO.getIdUsuario();
 
-        Usuario usuario = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new RegraNegocioException("Código de usuário inválido."));
+        Usuario usuario = usuarioService.puxarUsuarioPeloId(idUsuario);
 
         Livro livro = Livro.builder()
                 .usuario(usuario)
