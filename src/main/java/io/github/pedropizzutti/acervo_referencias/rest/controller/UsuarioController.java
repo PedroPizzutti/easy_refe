@@ -5,6 +5,8 @@ import io.github.pedropizzutti.acervo_referencias.rest.dto.EmailDTO;
 import io.github.pedropizzutti.acervo_referencias.rest.dto.SenhaDTO;
 import io.github.pedropizzutti.acervo_referencias.rest.dto.UsuarioDTO;
 import io.github.pedropizzutti.acervo_referencias.service.UsuarioService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/usuario")
+@Api("Api Usuários")
 public class UsuarioController {
 
     private UsuarioService usuarioService;
@@ -23,7 +26,7 @@ public class UsuarioController {
 
     }
 
-    @PostMapping("/newUser")
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody UsuarioDTO salvarNovoUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO) throws RegraNegocioException {
 
@@ -55,7 +58,7 @@ public class UsuarioController {
 
     }
 
-    @DeleteMapping("/admin/delUser/{id}")
+    @DeleteMapping("/admin/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletarUsuario(@PathVariable Integer id) throws RegraNegocioException {
 
@@ -63,7 +66,7 @@ public class UsuarioController {
 
     }
 
-    @PutMapping("/admin/attUser")
+    @PutMapping("/admin")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody UsuarioDTO atualizarUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO) throws RegraNegocioException {
 
@@ -73,7 +76,7 @@ public class UsuarioController {
 
     }
 
-    @PatchMapping("/att/userEmail/{idUsuario}")
+    @PatchMapping("/userEmail/{idUsuario}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void atualizarEmailUsuario(@RequestBody @Valid EmailDTO emailDTO, @PathVariable Integer idUsuario) throws RegraNegocioException {
 
@@ -81,7 +84,7 @@ public class UsuarioController {
 
     }
 
-    @PatchMapping("/att/userPass/{idUsuario}")
+    @PatchMapping("/userPass/{idUsuario}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void atualizarSenhaUsuario(@RequestBody @Valid SenhaDTO senhaDTO, @PathVariable Integer idUsuario) throws RegraNegocioException{
 

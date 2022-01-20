@@ -19,7 +19,7 @@ public class LivroController {
         this.livroService = livroService;
     }
 
-    @PostMapping("/newBook")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody LivroDTO salvarLivro(@RequestBody @Valid LivroDTO livroDTO) throws RegraNegocioException {
 
@@ -29,7 +29,7 @@ public class LivroController {
 
     }
 
-    @PutMapping("/attBook")
+    @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody LivroDTO atualizarLivro(@RequestBody @Valid LivroDTO livroDTO) throws RegraNegocioException {
 
@@ -39,7 +39,7 @@ public class LivroController {
 
     }
 
-    @DeleteMapping("/delBook")
+    @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletarLivro(@RequestBody @Valid LivroDTO livroDTO) throws RegraNegocioException {
 
@@ -47,23 +47,23 @@ public class LivroController {
 
     }
 
-    @GetMapping("/{loginUsuario}/{paginaAtual}")
+    @GetMapping("/{loginUsuario}/{paginacaoBusca}")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody List<LivroDTO> buscarLivrosUsuario
-            (@PathVariable String loginUsuario, @PathVariable Integer paginaAtual) throws RegraNegocioException {
+            (@PathVariable String loginUsuario, @PathVariable Integer paginacaoBusca) throws RegraNegocioException {
 
-        List<LivroDTO> livroDTOS = livroService.listarLivrosUsuario(loginUsuario, paginaAtual);
+        List<LivroDTO> livroDTOS = livroService.listarLivrosUsuario(loginUsuario, paginacaoBusca);
 
         return  livroDTOS;
 
     }
 
-    @GetMapping("/findBook/{paginaAtual}")
+    @GetMapping("{paginacaoBuscaFiltro}")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody List<LivroDTO> pesquisarLivrosFiltro
-            (@RequestBody LivroDTO livroDTOFiltrado, @PathVariable Integer paginaAtual) throws RegraNegocioException {
+            (@RequestBody LivroDTO livroDTOFiltrado, @PathVariable Integer paginacaoBuscaFiltro) throws RegraNegocioException {
 
-        List<LivroDTO> livrosDTO = livroService.listarLivrosFiltro(livroDTOFiltrado, paginaAtual);
+        List<LivroDTO> livrosDTO = livroService.listarLivrosFiltro(livroDTOFiltrado, paginacaoBuscaFiltro);
 
         return livrosDTO;
 
