@@ -3,7 +3,6 @@ package io.github.pedropizzutti.acervo_referencias.service.implemantationService
 import io.github.pedropizzutti.acervo_referencias.domain.entity.Livro;
 import io.github.pedropizzutti.acervo_referencias.domain.entity.Usuario;
 import io.github.pedropizzutti.acervo_referencias.domain.repository.LivroRepository;
-import io.github.pedropizzutti.acervo_referencias.domain.repository.UsuarioRepository;
 import io.github.pedropizzutti.acervo_referencias.exception.RegraNegocioException;
 import io.github.pedropizzutti.acervo_referencias.rest.dto.LivroDTO;
 import io.github.pedropizzutti.acervo_referencias.service.LivroService;
@@ -12,7 +11,6 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

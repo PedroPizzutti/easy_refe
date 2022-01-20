@@ -18,7 +18,7 @@ public class Livro {
 
     @Id
     @Column(name = "id_referencia")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "autor_referencia", length = 100, nullable = false)

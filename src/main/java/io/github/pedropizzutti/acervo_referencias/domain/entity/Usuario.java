@@ -1,5 +1,6 @@
 package io.github.pedropizzutti.acervo_referencias.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +21,7 @@ public class Usuario {
 
     @Id
     @Column(name = "id_usuario")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "login_usuario", length = 30, nullable = false, unique = true)
@@ -38,6 +39,7 @@ public class Usuario {
     @Column(name = "admin_usuario")
     private boolean admin;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "usuario")
     private List<Livro> livros;
 
