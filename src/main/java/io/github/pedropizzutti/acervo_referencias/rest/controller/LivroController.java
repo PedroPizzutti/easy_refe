@@ -39,11 +39,11 @@ public class LivroController {
 
     }
 
-    @DeleteMapping("/delBook/{idRegistroLivro}")
+    @DeleteMapping("/delBook")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletarLivro(@PathVariable Integer idRegistroLivro) throws RegraNegocioException {
+    public void deletarLivro(@RequestBody @Valid LivroDTO livroDTO) throws RegraNegocioException {
 
-        livroService.deletarLivro(idRegistroLivro);
+        livroService.deletarLivro(livroDTO);
 
     }
 

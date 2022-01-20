@@ -64,7 +64,7 @@ public class LivroServiceImp implements LivroService {
 
         } else {
 
-            throw new RegraNegocioException("Problemas com autentificação da relação usuário-livro");
+            throw new RegraNegocioException("Problemas com atualização do livro.");
 
         }
 
@@ -72,11 +72,21 @@ public class LivroServiceImp implements LivroService {
 
     @Override
     @Transactional
-    public void deletarLivro(Integer idRegistroLivro) throws RegraNegocioException {
+    public void deletarLivro(LivroDTO livroDTO) throws RegraNegocioException {
 
-        Livro livroParaDeletacao = puxarLivroPeloId(idRegistroLivro);
+        Livro livroParaDeletacao = puxarLivroPeloId(livroDTO.getIdRegistro());
 
-        livroRepository.delete(livroParaDeletacao);
+        if(livroDTO.getTitulo().equals(livroParaDeletacao.getTitulo())){
+
+            livroRepository.delete(livroParaDeletacao);
+
+        } else {
+
+            throw new RegraNegocioException("Problemas com a deletação do livro.");
+
+        }
+
+
 
     }
 
