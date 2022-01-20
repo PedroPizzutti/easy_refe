@@ -15,13 +15,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class LivroServiceImplemantation implements LivroService {
+public class LivroServiceImp implements LivroService {
 
     private final Integer ELEMENTOS_POR_PAGINA = 10;
     private LivroRepository livroRepository;
     private UsuarioService usuarioService;
 
-    public LivroServiceImplemantation(LivroRepository livroRepository, UsuarioService usuarioService){
+    public LivroServiceImp(LivroRepository livroRepository, UsuarioService usuarioService){
         this.livroRepository = livroRepository;
         this.usuarioService = usuarioService;
     }

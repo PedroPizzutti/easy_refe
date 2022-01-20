@@ -4,6 +4,8 @@ import io.github.pedropizzutti.acervo_referencias.domain.entity.Usuario;
 import io.github.pedropizzutti.acervo_referencias.domain.repository.UsuarioRepository;
 import io.github.pedropizzutti.acervo_referencias.exception.RegraNegocioException;
 import io.github.pedropizzutti.acervo_referencias.exception.UsuarioNaoEncontradoException;
+import io.github.pedropizzutti.acervo_referencias.rest.dto.EmailDTO;
+import io.github.pedropizzutti.acervo_referencias.rest.dto.SenhaDTO;
 import io.github.pedropizzutti.acervo_referencias.rest.dto.UsuarioDTO;
 import io.github.pedropizzutti.acervo_referencias.service.UsuarioService;
 import org.springframework.data.domain.*;
@@ -16,13 +18,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class UsuarioServiceImplemantation implements UsuarioService {
+public class UsuarioServiceImp implements UsuarioService {
 
     private final Integer ELEMENTOS_POR_PAGINA = 10;
     private UsuarioRepository usuarioRepository;
     private PasswordEncoder passwordEncoder;
 
-    public UsuarioServiceImplemantation(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder){
+    public UsuarioServiceImp(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder){
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -88,46 +90,43 @@ public class UsuarioServiceImplemantation implements UsuarioService {
 
     @Override
     @Transactional
-    public void atualizarEmailUsuario(String novoEmail, Integer id) throws RegraNegocioException {
+    public void atualizarEmailUsuario(EmailDTO emailDTO, Integer idUsuario) throws RegraNegocioException {
 
-            Usuario usuario = puxarUsuarioPeloId(id);
+        boolean emailAtualCorreto = verificarEmailAtual(emailDTO, idUsuario);
+        boolean novoEmailConfirmado = verificarNovoEmail(emailDTO);
 
-            usuario.setEmail(novoEmail);
+        if(emailAtualCorreto && novoEmailConfirmado) {
 
+            Usuario usuario = puxarUsuarioPeloId(idUsuario);
+            usuario.setEmail(emailDTO.getNovoEmail());
             usuarioRepository.save(usuario);
 
+        } else {
+
+            throw new RegraNegocioException("Não foi possível atualizar o email.");
+
+        }
     }
 
     @Override
     @Transactional
-    public void atualizarSenhaUsuario(String senhaAtual, String novaSenha, String confirmacaoNovaSenha, Integer id)
+    public void atualizarSenhaUsuario(SenhaDTO senhaDTO, Integer idUsuario)
             throws RegraNegocioException {
 
-        Usuario usuario = puxarUsuarioPeloId(id);
+        boolean senhaAtualCorreta = verificarSenhaAtual(senhaDTO, idUsuario);
+        boolean novaSenhaConfirmada = verificarNovaSenha(senhaDTO);
 
-        boolean senhaAtualCorreta = passwordEncoder.matches(senhaAtual, usuario.getSenha());
+        if(senhaAtualCorreta && novaSenhaConfirmada) {
 
-        if(senhaAtualCorreta){
+            Usuario usuario = puxarUsuarioPeloId(idUsuario);
+            usuario.setSenha(passwordEncoder.encode(senhaDTO.getNovaSenha()));
+            usuarioRepository.save(usuario);
 
-            boolean novaSenhaConfirmada = novaSenha.equals(confirmacaoNovaSenha);
-
-            if(novaSenhaConfirmada){
-
-                usuario.setSenha(passwordEncoder.encode(novaSenha));
-
-                usuarioRepository.save(usuario);
-
-            } else {
-
-                throw new RegraNegocioException("A nova senha não foi confirmada.");
-
-            }
         } else {
 
-            throw new RegraNegocioException("Senha atual incorreta.");
+            throw new RegraNegocioException("Não foi possível atualizar a senha");
 
         }
-
     }
 
     @Override
@@ -266,6 +265,80 @@ public class UsuarioServiceImplemantation implements UsuarioService {
                 .build();
 
         return usuario;
+
+    }
+
+    private boolean verificarEmailAtual(EmailDTO emailDTO, Integer idUsuario) throws RegraNegocioException {
+
+        String emailAtual = emailDTO.getEmailAtual();
+        Usuario usuario = puxarUsuarioPeloId(idUsuario);
+
+        boolean emailAtualCorreto = emailAtual.equals(usuario.getEmail());
+
+        if(emailAtualCorreto){
+
+            return true;
+
+        } else {
+
+            throw new RegraNegocioException("Email atual incorreto.");
+
+        }
+    }
+
+    private boolean verificarNovoEmail(EmailDTO emailDTO) throws RegraNegocioException {
+
+        String novoEmail = emailDTO.getNovoEmail();
+        String confirmacaoNovoEmail = emailDTO.getConfirmacaoEmailNovo();
+
+        boolean emailsBatem = novoEmail.equals(confirmacaoNovoEmail);
+
+        if(emailsBatem){
+
+            return true;
+
+        } else {
+
+            throw new RegraNegocioException("Novo email não confirmado.");
+
+        }
+
+    }
+
+    private boolean verificarSenhaAtual(SenhaDTO senhaDTO, Integer idUsuario) throws RegraNegocioException {
+
+        String senhaAtual = senhaDTO.getSenhaAtual();
+        Usuario usuario = puxarUsuarioPeloId(idUsuario);
+
+        boolean senhaAtualCorreta = passwordEncoder.matches(senhaAtual, usuario.getSenha());
+
+        if(senhaAtualCorreta){
+
+            return true;
+
+        } else {
+
+            throw new RegraNegocioException("Senha atual incorreta.");
+
+        }
+    }
+
+    private boolean verificarNovaSenha(SenhaDTO senhaDTO) throws RegraNegocioException {
+
+        String novaSenha = senhaDTO.getNovaSenha();
+        String confirmacaoNovaSenha = senhaDTO.getConfirmacaoNovaSenha();
+
+        boolean senhasBatem = novaSenha.equals(confirmacaoNovaSenha);
+
+        if(senhasBatem){
+
+            return true;
+
+        } else {
+
+            throw new RegraNegocioException("Nova senha não confirmada.");
+
+        }
 
     }
 

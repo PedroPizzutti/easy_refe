@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 
 @Data
 @Builder
@@ -13,7 +14,13 @@ import javax.validation.constraints.Email;
 @AllArgsConstructor
 public class EmailDTO {
 
-    @Email(message = "Insira um Email Válido.")
+    @Email(message = "{campo.email.valido}")
+    private String emailAtual;
+
+    @Email(message = "{campo.email.valido}")
     private String novoEmail;
+
+    @NotEmpty(message = "{campo.att-email.confirma-novo-email-obrigatorio}")
+    private String confirmacaoEmailNovo;
 
 }

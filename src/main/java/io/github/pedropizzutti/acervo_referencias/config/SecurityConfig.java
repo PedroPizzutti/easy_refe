@@ -1,7 +1,6 @@
 package io.github.pedropizzutti.acervo_referencias.config;
 
-import io.github.pedropizzutti.acervo_referencias.service.implemantationService.UserDetailsServiceImplemantation;
-import io.github.pedropizzutti.acervo_referencias.service.implemantationService.UsuarioServiceImplemantation;
+import io.github.pedropizzutti.acervo_referencias.service.implemantationService.UserDetailsServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -15,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private UserDetailsServiceImplemantation userDetails;
+    private UserDetailsServiceImp userDetails;
 
     @Bean
     public PasswordEncoder passwordEncoder(){

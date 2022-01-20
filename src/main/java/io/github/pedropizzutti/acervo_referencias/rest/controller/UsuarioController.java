@@ -73,25 +73,19 @@ public class UsuarioController {
 
     }
 
-    @PatchMapping("/att/userEmail/{id}")
+    @PatchMapping("/att/userEmail/{idUsuario}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void atualizarEmailUsuario(@RequestBody @Valid EmailDTO emailDTO, @PathVariable Integer id) throws RegraNegocioException {
+    public void atualizarEmailUsuario(@RequestBody @Valid EmailDTO emailDTO, @PathVariable Integer idUsuario) throws RegraNegocioException {
 
-        String novoEmail = emailDTO.getNovoEmail();
-
-        usuarioService.atualizarEmailUsuario(novoEmail, id);
+        usuarioService.atualizarEmailUsuario(emailDTO, idUsuario);
 
     }
 
-    @PatchMapping("/att/userPass/{id}")
+    @PatchMapping("/att/userPass/{idUsuario}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void atualizarSenhaUsuario(@RequestBody @Valid SenhaDTO senhaDTO, @PathVariable Integer id) throws RegraNegocioException{
+    public void atualizarSenhaUsuario(@RequestBody @Valid SenhaDTO senhaDTO, @PathVariable Integer idUsuario) throws RegraNegocioException{
 
-        String senhaAtual = senhaDTO.getSenhaAtual();
-        String novaSenha = senhaDTO.getNovaSenha();
-        String confirmacaoNovaSenha = senhaDTO.getConfirmacaoNovaSenha();
-
-        usuarioService.atualizarSenhaUsuario(senhaAtual, novaSenha, confirmacaoNovaSenha, id);
+        usuarioService.atualizarSenhaUsuario(senhaDTO, idUsuario);
 
 
     }

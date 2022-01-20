@@ -33,7 +33,7 @@ public class UsuarioDTO {
     private String nome;
 
     @NotEmpty(message = "{campo.usuario.email.obrigatorio}")
-    @Email(message = "Insira um Email Válido.")
+    @Email(message = "{campo.email.valido}")
     private String email;
 
     @NotNull
