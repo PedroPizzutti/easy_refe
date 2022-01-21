@@ -34,7 +34,6 @@ public class UsuarioServiceImp implements UsuarioService {
     public UsuarioDTO salvar(UsuarioDTO usuarioDTO) throws RegraNegocioException {
 
         boolean loginIndisponivel = verificarDisponibilidadeDoLogin(usuarioDTO.getLogin());
-
         boolean emailIndisponivel = verificarDisponibilidadeDoEmail(usuarioDTO.getEmail());
 
         if(loginIndisponivel) {

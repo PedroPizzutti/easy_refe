@@ -44,19 +44,19 @@ public class LivroServiceImp implements LivroService {
     @Transactional
     public LivroDTO atualizarLivro(LivroDTO livroDTO) throws RegraNegocioException {
 
-        Livro livroParaAtualizacao = puxarLivroPeloId(livroDTO.getIdRegistro());
-        Usuario usuarioLivro = usuarioService.puxarUsuarioPeloId(livroDTO.getIdUsuario());
+        Livro livroBanco = puxarLivroPeloId(livroDTO.getIdRegistro());
 
-        if(livroParaAtualizacao.getUsuario().getId() == usuarioLivro.getId()){
+        boolean livroAutenticado = verificarLivroBancoMatchsLivroBanco(livroDTO, livroBanco);
 
-            livroParaAtualizacao.setUsuario(usuarioLivro);
-            livroParaAtualizacao.setAutor(livroDTO.getAutor());
-            livroParaAtualizacao.setTitulo(livroDTO.getTitulo());
-            livroParaAtualizacao.setAno(livroDTO.getAno());
-            livroParaAtualizacao.setReferencia(livroDTO.getReferencia());
-            livroParaAtualizacao.setAnotacao(livroDTO.getAnotacao());
+        if(livroAutenticado){
 
-            Livro livroAtualizado = livroRepository.save(livroParaAtualizacao);
+            livroBanco.setAutor(livroDTO.getAutor());
+            livroBanco.setTitulo(livroDTO.getTitulo());
+            livroBanco.setAno(livroDTO.getAno());
+            livroBanco.setReferencia(livroDTO.getReferencia());
+            livroBanco.setAnotacao(livroDTO.getAnotacao());
+
+            Livro livroAtualizado = livroRepository.save(livroBanco);
 
             LivroDTO livroAtualizadoDTO = converterLivroParaLivroDTO(livroAtualizado);
 
@@ -74,11 +74,13 @@ public class LivroServiceImp implements LivroService {
     @Transactional
     public void deletarLivro(LivroDTO livroDTO) throws RegraNegocioException {
 
-        Livro livroParaDeletacao = puxarLivroPeloId(livroDTO.getIdRegistro());
+        Livro livroBanco = puxarLivroPeloId(livroDTO.getIdRegistro());
 
-        if(livroDTO.getTitulo().equals(livroParaDeletacao.getTitulo())){
+        boolean livroBancoEqualsLivroDTO = verificarLivroBancoMatchsLivroBanco(livroDTO, livroBanco);
 
-            livroRepository.delete(livroParaDeletacao);
+        if(livroBancoEqualsLivroDTO){
+
+            livroRepository.delete(livroBanco);
 
         } else {
 
@@ -165,6 +167,27 @@ public class LivroServiceImp implements LivroService {
         Example exemplar = Example.of(livro, configMatcher);
 
         return exemplar;
+
+    }
+
+    private boolean verificarLivroBancoMatchsLivroBanco(LivroDTO livroDTO, Livro livroBanco) throws RegraNegocioException {
+
+        boolean livroBancoAutenticado;
+
+        Usuario usuario = usuarioService.puxarUsuarioPeloId(livroDTO.getIdUsuario());
+
+        if(livroDTO.getIdUsuario() == livroBanco.getUsuario().getId()
+            && livroDTO.getTitulo().equals(livroBanco.getTitulo())){
+
+            livroBancoAutenticado = true;
+
+        } else {
+
+            livroBancoAutenticado = false;
+
+        }
+
+        return livroBancoAutenticado;
 
     }
 
