@@ -176,8 +176,7 @@ public class LivroServiceImp implements LivroService {
 
         Usuario usuario = usuarioService.puxarUsuarioPeloId(livroDTO.getIdUsuario());
 
-        if(livroDTO.getIdUsuario() == livroBanco.getUsuario().getId()
-            && livroDTO.getTitulo().equals(livroBanco.getTitulo())){
+        if(livroDTO.getIdUsuario() == livroBanco.getUsuario().getId()){
 
             livroBancoAutenticado = true;
 
