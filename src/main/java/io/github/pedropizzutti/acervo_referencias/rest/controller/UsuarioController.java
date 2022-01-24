@@ -25,7 +25,7 @@ public class UsuarioController {
 
     }
 
-    @PostMapping()
+    @PostMapping("/newUser")
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody UsuarioDTO salvarNovoUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO) throws RegraNegocioException {
 
@@ -75,7 +75,7 @@ public class UsuarioController {
 
     }
 
-    @PatchMapping("/userEmail/{idUsuario}")
+    @PatchMapping("/user/Email{idUsuario}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void atualizarEmailUsuario(@RequestBody @Valid EmailDTO emailDTO, @PathVariable Integer idUsuario) throws RegraNegocioException {
 
@@ -83,7 +83,7 @@ public class UsuarioController {
 
     }
 
-    @PatchMapping("/userPass/{idUsuario}")
+    @PatchMapping("/user/Pass{idUsuario}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void atualizarSenhaUsuario(@RequestBody @Valid SenhaDTO senhaDTO, @PathVariable Integer idUsuario) throws RegraNegocioException{
 
